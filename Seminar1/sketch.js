@@ -84,8 +84,8 @@ function drawShootingChart() {
     ellipse(x, y, ellipseSize, ellipseSize);
 
     shots.push({
-      x: x,
-      y: y,
+      x: round(x),
+      y: round(y),
       data: {
         locX: locX,
         locY: locY,
