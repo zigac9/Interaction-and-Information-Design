@@ -1,5 +1,6 @@
 let shots = [];
 let clickedShot = null;
+let combinedEfficiency = {};
 
 function preload() {
   courtImg = loadImage("./images/NBA_court.png");
@@ -15,55 +16,49 @@ function draw() {
   image(courtImg, 0, 0, width, height);
 
   drawShootingChart();
+  // displayEfficiency();
 }
 
 function drawShootingChart() {
-  // Define colors for each combination of SHOT_ZONE_BASIC and SHOT_ZONE_AREA
   let zoneColors = {
-    "Above the Break 3": [255, 0, 0], // Red
-    Backcourt: [0, 255, 0], // Green
-    "In The Paint (Non-RA)": [0, 0, 255], // Blue
-    "Left Corner 3": [255, 255, 0], // Yellow
-    "Mid-Range": [255, 0, 255], // Magenta
-    "Restricted Area": [0, 255, 255], // Cyan
-    "Right Corner 3": [128, 0, 128], // Purple
+    "Above the Break 3": [255, 0, 0],
+    Backcourt: [0, 255, 0],
+    "In The Paint (Non-RA)": [0, 0, 255],
+    "Left Corner 3": [255, 255, 0],
+    "Mid-Range": [255, 0, 255],
+    "Restricted Area": [0, 255, 255],
+    "Right Corner 3": [128, 0, 128],
   };
 
-  // Define colors for each SHOT_ZONE_AREA
   let areaColors = {
-    "Center(C)": [255, 0, 0], // Red
-    "Right Side Center(RC)": [0, 255, 0], // Green
-    "Left Side Center(LC)": [0, 0, 255], // Blue
-    "Left Side(L)": [255, 255, 0], // Yellow
-    "Right Side(R)": [255, 0, 255], // Magenta
-    "Back Court(BC)": [0, 255, 255], // Cyan
+    "Center(C)": [255, 0, 0],
+    "Right Side Center(RC)": [0, 255, 0],
+    "Left Side Center(LC)": [0, 0, 255],
+    "Left Side(L)": [255, 255, 0],
+    "Right Side(R)": [255, 0, 255],
+    "Back Court(BC)": [0, 255, 255],
   };
 
-  // Clear the shots array
   shots = [];
+  combinedEfficiency = {};
 
-  // Loop through each row in the CSV file
   for (let i = 0; i < shotData.getRowCount(); i++) {
-    // Get the LOC_X and LOC_Y values
     let locX = shotData.getNum(i, "LOC_X");
     let locY = shotData.getNum(i, "LOC_Y");
     let shotZoneBasic = shotData.getString(i, "SHOT_ZONE_BASIC");
     let shotZoneArea = shotData.getString(i, "SHOT_ZONE_AREA");
+    let eventType = shotData.getString(i, "EVENT_TYPE");
 
-    // Map the LOC_X and LOC_Y values to the canvas size
     let x = map(locX, -250, 250, 0, width);
     let y = map(locY, -50, 470, height, 0);
 
-    // Set the color based on the zone and area
     let color = zoneColors[shotZoneBasic] ||
-      areaColors[shotZoneArea] || [0, 0, 0]; // Default to black if no match
-    fill(color[0], color[1], color[2], 255); // Set opacity to 255 (fully opaque)
+      areaColors[shotZoneArea] || [0, 0, 0];
+    fill(color[0], color[1], color[2], 255);
 
-    // Draw a circle at the mapped location
     noStroke();
     ellipse(x, y, 5, 5);
 
-    // Store the shot data and position
     shots.push({
       x: x,
       y: y,
@@ -72,9 +67,53 @@ function drawShootingChart() {
         locY: locY,
         shotZoneBasic: shotZoneBasic,
         shotZoneArea: shotZoneArea,
-        eventType: shotData.getString(i, "EVENT_TYPE"),
+        eventType: eventType,
       },
     });
+
+    let combinedKey = `${shotZoneBasic} - ${shotZoneArea}`;
+
+    if (!combinedEfficiency[combinedKey]) {
+      combinedEfficiency[combinedKey] = { made: 0, attempted: 0 };
+    }
+
+    combinedEfficiency[combinedKey].attempted++;
+
+    if (eventType === "Made Shot") {
+      combinedEfficiency[combinedKey].made++;
+    }
+  }
+
+  // Calculate and display efficiency at each shot location
+  let shot_before_key = new Set();
+  for (let shot of shots) {
+    let combinedKey = `${shot.data.shotZoneBasic} - ${shot.data.shotZoneArea}`;
+    let efficiency =
+      (combinedEfficiency[combinedKey].made /
+        combinedEfficiency[combinedKey].attempted) *
+      100;
+    if (shot_before_key.has(combinedKey)) {
+      continue;
+    }
+    fill(0);
+    textSize(30);
+    text(`${efficiency.toFixed(2)}%`, shot.x + 5, shot.y - 5);
+    shot_before_key.add(combinedKey);
+  }
+}
+
+function displayEfficiency() {
+  fill(0);
+  textSize(12);
+  let y = 20;
+
+  text("Combined Zone and Area Efficiency:", 10, y);
+  y += 20;
+  for (let key in combinedEfficiency) {
+    let efficiency =
+      (combinedEfficiency[key].made / combinedEfficiency[key].attempted) * 100;
+    text(`${key}: ${efficiency.toFixed(2)}%`, 10, y);
+    y += 20;
   }
 }
 
