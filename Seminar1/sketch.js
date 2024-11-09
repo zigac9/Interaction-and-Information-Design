@@ -1,6 +1,7 @@
 let shots = [];
 let clickedShot = null;
 let combinedEfficiency = {};
+let popup = null;
 
 function preload() {
   courtImg = loadImage("./images/NBA_court.png");
@@ -17,6 +18,19 @@ function draw() {
 
   drawShootingChart();
   // displayEfficiency();
+}
+
+function windowResized() {
+  let aspectRatio = 1352 / 1273;
+  let newWidth = windowWidth;
+  let newHeight = windowWidth / aspectRatio;
+
+  if (newHeight > windowHeight) {
+    newHeight = windowHeight;
+    newWidth = windowHeight * aspectRatio;
+  }
+
+  resizeCanvas(newWidth, newHeight);
 }
 
 function drawShootingChart() {
@@ -54,10 +68,15 @@ function drawShootingChart() {
 
     let color = zoneColors[shotZoneBasic] ||
       areaColors[shotZoneArea] || [0, 0, 0];
-    fill(color[0], color[1], color[2], 255);
 
-    noStroke();
-    ellipse(x, y, 5, 5);
+    if (shotData.getString(i, "EVENT_TYPE") === "Made Shot") {
+      fill(color[0], color[1], color[2], 255);
+      noStroke();
+    } else {
+      noFill();
+      stroke(color[0], color[1], color[2], 255);
+    }
+    ellipse(x, y, 8, 8);
 
     shots.push({
       x: x,
@@ -82,23 +101,6 @@ function drawShootingChart() {
     if (eventType === "Made Shot") {
       combinedEfficiency[combinedKey].made++;
     }
-  }
-
-  // Calculate and display efficiency at each shot location
-  let shot_before_key = new Set();
-  for (let shot of shots) {
-    let combinedKey = `${shot.data.shotZoneBasic} - ${shot.data.shotZoneArea}`;
-    let efficiency =
-      (combinedEfficiency[combinedKey].made /
-        combinedEfficiency[combinedKey].attempted) *
-      100;
-    if (shot_before_key.has(combinedKey)) {
-      continue;
-    }
-    fill(0);
-    textSize(30);
-    text(`${efficiency.toFixed(2)}%`, shot.x + 5, shot.y - 5);
-    shot_before_key.add(combinedKey);
   }
 }
 
