@@ -3,13 +3,16 @@ let clickedShot = null;
 let combinedEfficiency = {};
 let popup = null;
 
+let width_image = 1352;
+let height_image = 1273;
+
 function preload() {
   courtImg = loadImage("./images/NBA_court.png");
   shotData = loadTable("./data/shot_data.csv", "csv", "header");
 }
 
 function setup() {
-  createCanvas(1352, 1273);
+  createCanvas(width_image, height_image);
 }
 
 function draw() {
@@ -17,11 +20,11 @@ function draw() {
   image(courtImg, 0, 0, width, height);
 
   drawShootingChart();
-  // displayEfficiency();
+  displayShotData();
 }
 
 function windowResized() {
-  let aspectRatio = 1352 / 1273;
+  let aspectRatio = width_image / height_image;
   let newWidth = windowWidth;
   let newHeight = windowWidth / aspectRatio;
 
@@ -64,7 +67,8 @@ function drawShootingChart() {
     let eventType = shotData.getString(i, "EVENT_TYPE");
 
     let x = map(locX, -250, 250, 0, width);
-    let y = map(locY, -50, 470, height, 0);
+    let y = map(locY, -50, 418, height, 0);
+    strokeWeight(1);
 
     let color = zoneColors[shotZoneBasic] ||
       areaColors[shotZoneArea] || [0, 0, 0];
@@ -76,7 +80,8 @@ function drawShootingChart() {
       noFill();
       stroke(color[0], color[1], color[2], 255);
     }
-    ellipse(x, y, 8, 8);
+    let ellipseSize = min(width_image, height_image) * 0.009; // 2% of the smaller dimension
+    ellipse(x, y, ellipseSize, ellipseSize);
 
     shots.push({
       x: x,
@@ -104,61 +109,74 @@ function drawShootingChart() {
   }
 }
 
-function displayEfficiency() {
-  fill(0);
-  textSize(12);
-  let y = 20;
-
-  text("Combined Zone and Area Efficiency:", 10, y);
-  y += 20;
-  for (let key in combinedEfficiency) {
-    let efficiency =
-      (combinedEfficiency[key].made / combinedEfficiency[key].attempted) * 100;
-    text(`${key}: ${efficiency.toFixed(2)}%`, 10, y);
-    y += 20;
+function mousePressed() {
+  for (let shot of shots) {
+    let d = dist(mouseX, mouseY, shot.x, shot.y);
+    if (d < 8) {
+      clickedShot = shot;
+      break;
+    } else {
+      clickedShot = null;
+    }
   }
 }
 
-function drawBackgroundAreas(zoneColors, areaColors) {
-  // Draw semi-transparent background areas for each zone
-  for (let zone in zoneColors) {
-    let color = zoneColors[zone];
-    fill(color[0], color[1], color[2], color[3]);
+function displayShotData() {
+  if (clickedShot) {
+    let tooltipX = clickedShot.x + 15;
+    let tooltipY = clickedShot.y - 15;
+    let tooltipWidth = 200;
+    let tooltipHeight = 140;
 
-    // Example: Drawing rectangles for different zones
-    if (zone === "Above the Break 3") {
-      rect(0, 0, width, height / 3);
-    } else if (zone === "Backcourt") {
-      rect(0, height / 3, width, height / 3);
-    } else if (zone === "In The Paint (Non-RA)") {
-      rect(0, (2 * height) / 3, width, height / 3);
-    } else if (zone === "Left Corner 3") {
-      rect(0, 0, width / 3, height);
-    } else if (zone === "Mid-Range") {
-      rect(width / 3, 0, width / 3, height);
-    } else if (zone === "Restricted Area") {
-      rect((2 * width) / 3, 0, width / 3, height);
-    } else if (zone === "Right Corner 3") {
-      rect((2 * width) / 3, 0, width / 3, height);
+    // Adjust position if tooltip goes off the canvas
+    if (tooltipX + tooltipWidth > width) {
+      tooltipX = clickedShot.x - tooltipWidth - 15;
     }
-  }
-
-  // Draw semi-transparent background areas for each area
-  for (let area in areaColors) {
-    let color = areaColors[area];
-    fill(color[0], color[1], color[2], color[3]);
-
-    // Example: Drawing rectangles for different areas
-    if (area === "Center(C)") {
-      rect(width / 3, height / 3, width / 3, height / 3);
-    } else if (area === "Right Side Center(RC)") {
-      rect((2 * width) / 3, height / 3, width / 3, height / 3);
-    } else if (area === "Left Side Center(LC)") {
-      rect(0, height / 3, width / 3, height / 3);
-    } else if (area === "Left Side(L)") {
-      rect(0, 0, width / 3, height);
-    } else if (area === "Right Side(R)") {
-      rect((2 * width) / 3, 0, width / 3, height);
+    if (tooltipY + tooltipHeight > height) {
+      tooltipY = clickedShot.y - tooltipHeight - 15;
     }
+
+    fill(0, 0, 0, 200); // Black background with some transparency
+    rect(tooltipX, tooltipY, tooltipWidth, tooltipHeight, 10); // Rounded corners
+
+    fill(255); // White text
+    textSize(12);
+
+    text(`Location X: ${clickedShot.x}`, tooltipX + 10, tooltipY + 20);
+    text(`Location Y: ${clickedShot.y}`, tooltipX + 10, tooltipY + 40);
+    text(
+      `Zone Basic: ${clickedShot.data.shotZoneBasic}`,
+      tooltipX + 10,
+      tooltipY + 60
+    );
+    text(
+      `Zone Area: ${clickedShot.data.shotZoneArea}`,
+      tooltipX + 10,
+      tooltipY + 80
+    );
+    text(
+      `Event Type: ${clickedShot.data.eventType}`,
+      tooltipX + 10,
+      tooltipY + 100
+    );
+
+    // Search for efficiency
+    let combinedKey = `${clickedShot.data.shotZoneBasic} - ${clickedShot.data.shotZoneArea}`;
+    let efficiency = combinedEfficiency[combinedKey]
+      ? (combinedEfficiency[combinedKey].made /
+          combinedEfficiency[combinedKey].attempted) *
+        100
+      : 0;
+    text(
+      `Efficiency: ${efficiency.toFixed(2)}%`,
+      tooltipX + 10,
+      tooltipY + 120
+    );
+
+    noFill();
+    stroke(0);
+    strokeWeight(2);
+    let ellipseSize = min(width_image, height_image) * 0.009; // 2% of the smaller dimension
+    ellipse(clickedShot.x, clickedShot.y, ellipseSize, ellipseSize);
   }
 }
