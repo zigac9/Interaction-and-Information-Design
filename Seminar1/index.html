@@ -20,12 +20,12 @@
 
     <div id="sidebar">
       <h1>Luka Dončić Shooting Chart</h1>
-      <label for="yearSlider">Filter by Year: <span id="selectedYear">2018/2019</span></label>
+      <label for="yearSlider">Filter by Year: <span id="selectedYear">All years</span></label>
 
       <!-- Slider Container -->
       <div class="slider-container">
         <input type="range" id="yearSlider" min="2019" max="2024" value="2019" step="1"
-          oninput="updateYearLabel(this.value)">
+          oninput="updateYearLabel(this.value)" disabled>
 
         <!-- Custom breakpoints -->
         <div id="sliderBreakpoints">
@@ -41,7 +41,7 @@
 
       <!-- Checkbox for All option -->
       <div id="allOption">
-        <input type="checkbox" id="allCheckbox" onchange="toggleAllYearFilter(this)">
+        <input type="checkbox" id="allCheckbox" onchange="toggleAllYearFilter(this)" checked>
         <label for="allCheckbox">Show All Years</label>
       </div>
     </div>
