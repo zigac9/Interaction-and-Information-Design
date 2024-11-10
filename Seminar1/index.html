@@ -20,21 +20,52 @@
 
     <div id="sidebar">
       <h1>NBA Shooting Chart</h1>
-      <label for="yearSlider">Filter by Year: <span id="selectedYear">2019</span></label>
+      <label for="yearSlider">Filter by Year: <span id="selectedYear">2018/2019</span></label>
 
       <!-- Slider Container -->
       <div class="slider-container">
         <input type="range" id="yearSlider" min="2019" max="2024" value="2019" step="1"
           oninput="updateYearLabel(this.value)">
 
-        <!-- Add breakpoints dynamically -->
-        <div id="sliderBreakpoints"></div>
+        <!-- Custom breakpoints -->
+        <div id="sliderBreakpoints">
+          <span class="breakpoint" data-year="2018">2018/19</span>
+          <span class="breakpoint" data-year="2019">2019/20</span>
+          <span class="breakpoint" data-year="2020">2020/21</span>
+          <span class="breakpoint" data-year="2021">2021/22</span>
+          <span class="breakpoint" data-year="2022">2022/23</span>
+          <span class="breakpoint" data-year="2023">2023/24</span>
+          <span class="breakpoint" data-year="2024">2024/25</span>
+        </div>
+      </div>
+
+      <!-- Checkbox for All option -->
+      <div id="allOption">
+        <input type="checkbox" id="allCheckbox" onchange="toggleAllYearFilter(this)">
+        <label for="allCheckbox">Show All Years</label>
       </div>
     </div>
   </div>
 
-
-
   <script src="sketch.js"></script>
+  <script>
+    function updateYearLabel(value) {
+      // Calculate the range for the selected year
+      let startYear = value;
+      let endYear = parseInt(value) + 1;
+      document.getElementById("selectedYear").textContent = `${startYear}/${endYear}`;
+    }
+
+    function toggleAllYearFilter(checkbox) {
+      if (checkbox.checked) {
+        document.getElementById("yearSlider").disabled = true;
+        document.getElementById("selectedYear").textContent = "All Years";
+      } else {
+        document.getElementById("yearSlider").disabled = false;
+        updateYearLabel(document.getElementById("yearSlider").value);
+      }
+    }
+  </script>
 </body>
+
 </html>
