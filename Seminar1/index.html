@@ -1,18 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Sketch</title>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="stylesheet" type="text/css" href="style.css">
+  <title>Sketch</title>
 
-    <script src="libraries/p5.min.js"></script>
-    <script src="libraries/p5.sound.min.js"></script>
-  </head>
+  <link rel="stylesheet" type="text/css" href="style.css">
 
-  <body>
-    <script src="sketch.js"></script>
-  </body>
+  <script src="libraries/p5.min.js"></script>
+  <script src="libraries/p5.sound.min.js"></script>
+
+</head>
+
+<body>
+  <div class="container">
+    <div id="canvasContainer"></div>
+
+    <div id="sidebar">
+      <h1>NBA Shooting Chart</h1>
+      <label for="yearSlider">Filter by Year: <span id="selectedYear">2019</span></label>
+
+      <!-- Slider Container -->
+      <div class="slider-container">
+        <input type="range" id="yearSlider" min="2019" max="2024" value="2019" step="1"
+          oninput="updateYearLabel(this.value)">
+
+        <!-- Add breakpoints dynamically -->
+        <div id="sliderBreakpoints"></div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <script src="sketch.js"></script>
+</body>
 </html>

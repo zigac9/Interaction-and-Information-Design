@@ -21,7 +21,11 @@ function setup() {
     initialWidth = windowHeight * aspectRatio;
   }
 
-  createCanvas(initialWidth, initialHeight);
+  let canvas = createCanvas(initialWidth, initialHeight);
+  let container = document.getElementById("canvasContainer");
+  if (container) {
+    container.appendChild(canvas.elt); // Use canvas.elt to get the HTML element
+  }
   width_image = initialWidth;
   height_image = initialHeight;
 }
