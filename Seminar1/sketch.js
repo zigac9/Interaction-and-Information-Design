@@ -65,6 +65,9 @@ function drawShootingChart() {
     let shotZoneBasic = shotData.getString(i, "SHOT_ZONE_BASIC");
     let shotZoneArea = shotData.getString(i, "SHOT_ZONE_AREA");
     let eventType = shotData.getString(i, "EVENT_TYPE");
+    let actionType = shotData.getString(i, "ACTION_TYPE");
+    let shotType = shotData.getString(i, "SHOT_TYPE");
+    let shotZoneRange = shotData.getString(i, "SHOT_ZONE_RANGE");
 
     let x = map(locX, -250, 250, 0, width);
     let y = map(locY, -50, 418, height, 0);
@@ -92,6 +95,9 @@ function drawShootingChart() {
         shotZoneBasic: shotZoneBasic,
         shotZoneArea: shotZoneArea,
         eventType: eventType,
+        actionType: actionType,
+        shotType: shotType,
+        shotZoneRange: shotZoneRange,
       },
     });
 
@@ -125,42 +131,52 @@ function displayShotData() {
   if (clickedShot) {
     let tooltipX = clickedShot.x + 15;
     let tooltipY = clickedShot.y - 15;
-    let tooltipWidth = 200;
-    let tooltipHeight = 140;
+    let tooltipWidth = 250;
+    let tooltipHeight = 160;
 
-    // Adjust position if tooltip goes off the canvas
     if (tooltipX + tooltipWidth > width) {
       tooltipX = clickedShot.x - tooltipWidth - 15;
     }
     if (tooltipY + tooltipHeight > height) {
       tooltipY = clickedShot.y - tooltipHeight - 15;
     }
+    fill(0, 0, 0, 200);
+    rect(tooltipX, tooltipY, tooltipWidth, tooltipHeight, 10);
 
-    fill(0, 0, 0, 200); // Black background with some transparency
-    rect(tooltipX, tooltipY, tooltipWidth, tooltipHeight, 10); // Rounded corners
-
-    fill(255); // White text
+    fill(255);
     textSize(12);
 
-    text(`Location X: ${clickedShot.x}`, tooltipX + 10, tooltipY + 20);
-    text(`Location Y: ${clickedShot.y}`, tooltipX + 10, tooltipY + 40);
     text(
-      `Zone Basic: ${clickedShot.data.shotZoneBasic}`,
+      `Shoot zone basic: ${clickedShot.data.shotZoneBasic}`,
+      tooltipX + 10,
+      tooltipY + 20
+    );
+    text(
+      `Shoot Zone Area: ${clickedShot.data.shotZoneArea}`,
+      tooltipX + 10,
+      tooltipY + 40
+    );
+    text(
+      `Shot zone range: ${clickedShot.data.shotZoneRange}`,
       tooltipX + 10,
       tooltipY + 60
     );
     text(
-      `Zone Area: ${clickedShot.data.shotZoneArea}`,
+      `Action type: ${clickedShot.data.actionType}`,
       tooltipX + 10,
       tooltipY + 80
     );
     text(
-      `Event Type: ${clickedShot.data.eventType}`,
+      `Shot type: ${clickedShot.data.shotType}`,
       tooltipX + 10,
       tooltipY + 100
     );
+    text(
+      `Event Type: ${clickedShot.data.eventType}`,
+      tooltipX + 10,
+      tooltipY + 120
+    );
 
-    // Search for efficiency
     let combinedKey = `${clickedShot.data.shotZoneBasic} - ${clickedShot.data.shotZoneArea}`;
     let efficiency = combinedEfficiency[combinedKey]
       ? (combinedEfficiency[combinedKey].made /
@@ -168,15 +184,15 @@ function displayShotData() {
         100
       : 0;
     text(
-      `Efficiency: ${efficiency.toFixed(2)}%`,
+      `Area Efficiency: ${efficiency.toFixed(2)}%`,
       tooltipX + 10,
-      tooltipY + 120
+      tooltipY + 140
     );
 
     noFill();
     stroke(0);
     strokeWeight(2);
-    let ellipseSize = min(width_image, height_image) * 0.009; // 2% of the smaller dimension
+    let ellipseSize = min(width_image, height_image) * 0.009;
     ellipse(clickedShot.x, clickedShot.y, ellipseSize, ellipseSize);
   }
 }
