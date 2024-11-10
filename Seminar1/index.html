@@ -24,7 +24,7 @@
 
       <!-- Slider Container -->
       <div class="slider-container">
-        <input type="range" id="yearSlider" min="2019" max="2024" value="2019" step="1"
+        <input type="range" id="yearSlider" min="2018" max="2024" value="2018" step="1"
           oninput="updateYearLabel(this.value)" disabled>
 
         <!-- Custom breakpoints -->
@@ -44,7 +44,12 @@
         <input type="checkbox" id="allCheckbox" onchange="toggleAllYearFilter(this)" checked>
         <label for="allCheckbox">Show All Years</label>
       </div>
+      <div id="shotCountDisplay" class="info-display"></div>
+
+      <div id="efficiencyDisplay" class="info-display"></div>
+
     </div>
+
   </div>
 
   <script src="sketch.js"></script>

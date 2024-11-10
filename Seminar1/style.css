@@ -158,3 +158,39 @@ label[for="allCheckbox"] {
     box-shadow: none;
   }
 }
+
+.info-display {
+  background-color: #f0f0f0;
+  /* Light grey background */
+  border: 1px solid #ccc;
+  /* Light grey border */
+  border-radius: 5px;
+  /* Rounded corners */
+  padding: 10px;
+  /* Padding inside the box */
+  margin-top: 10px;
+  /* Space above the box */
+  font-family: Arial, sans-serif;
+  /* Font family */
+  font-size: 14px;
+  /* Font size */
+  color: #333;
+  /* Text color */
+}
+
+#shotCountDisplay {
+  font-weight: bold;
+  /* Bold text for shot count */
+}
+
+#efficiencyDisplay {
+  font-size: 12px;
+  /* Smaller font size for efficiency display */
+}
+
+#lastEfficiencyDisplay {
+  font-size: 12px;
+  /* Smaller font size for last efficiency display */
+  font-style: italic;
+  /* Italic text for last efficiency */
+}
