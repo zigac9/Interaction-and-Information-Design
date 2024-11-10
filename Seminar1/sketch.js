@@ -5,6 +5,7 @@ let popup = null;
 
 let width_image = 1352;
 let height_image = 1273;
+let aspectRatio = width_image / height_image;
 
 function preload() {
   courtImg = loadImage("./images/NBA_court.png");
@@ -12,7 +13,17 @@ function preload() {
 }
 
 function setup() {
-  createCanvas(width_image, height_image);
+  let initialWidth = windowWidth;
+  let initialHeight = windowWidth / aspectRatio;
+
+  if (initialHeight > windowHeight) {
+    initialHeight = windowHeight;
+    initialWidth = windowHeight * aspectRatio;
+  }
+
+  createCanvas(initialWidth, initialHeight);
+  width_image = initialWidth;
+  height_image = initialHeight;
 }
 
 function draw() {
@@ -24,7 +35,6 @@ function draw() {
 }
 
 function windowResized() {
-  let aspectRatio = width_image / height_image;
   let newWidth = windowWidth;
   let newHeight = windowWidth / aspectRatio;
 
@@ -34,6 +44,8 @@ function windowResized() {
   }
 
   resizeCanvas(newWidth, newHeight);
+  width_image = newWidth;
+  height_image = newHeight;
 }
 
 function drawShootingChart() {
