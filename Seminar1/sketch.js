@@ -212,3 +212,22 @@ function displayShotData() {
     ellipse(clickedShot.x, clickedShot.y, ellipseSize, ellipseSize);
   }
 }
+
+function updateYearLabel(value) {
+  // Calculate the range for the selected year
+  let startYear = value;
+  let endYear = parseInt(value) + 1;
+  document.getElementById(
+    "selectedYear"
+  ).textContent = `${startYear}/${endYear}`;
+}
+
+function toggleAllYearFilter(checkbox) {
+  if (checkbox.checked) {
+    document.getElementById("yearSlider").disabled = true;
+    document.getElementById("selectedYear").textContent = "All Years";
+  } else {
+    document.getElementById("yearSlider").disabled = false;
+    updateYearLabel(document.getElementById("yearSlider").value);
+  }
+}
