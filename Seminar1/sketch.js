@@ -45,8 +45,6 @@ function draw() {
   let dropdownQuarter = document.getElementById("filterDropdown").value;
   let dropdownTeam = document.getElementById("teamDropdown").value;
 
-  console.log(dropdownTeam);
-
   drawShootingChart(yearFilter, dropdownQuarter, dropdownTeam);
   displayShotData(yearFilter, dropdownQuarter, dropdownTeam);
   displayShotCount();
