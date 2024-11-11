@@ -2,6 +2,8 @@ let shots = [];
 let clickedShot = null;
 let combinedEfficiency = {};
 let popup = null;
+let buffer;
+let courtImg;
 
 let width_image = 1352;
 let height_image = 1273;
@@ -13,6 +15,8 @@ function preload() {
 }
 
 function setup() {
+  frameRate(5);
+
   let initialWidth = windowWidth;
   let initialHeight = windowWidth / aspectRatio;
 
@@ -26,13 +30,17 @@ function setup() {
   if (container) {
     container.appendChild(canvas.elt);
   }
+
+  buffer = createGraphics(initialWidth, initialHeight);
+  buffer.image(courtImg, 0, 0, initialWidth, initialHeight);
+
   width_image = initialWidth;
   height_image = initialHeight;
 }
 
 function draw() {
   background(255);
-  image(courtImg, 0, 0, width, height);
+  image(buffer, 0, 0);
 
   let yearFilter = document.getElementById("yearSlider").value;
   let allYears = document.getElementById("allCheckbox").checked;
