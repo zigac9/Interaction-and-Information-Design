@@ -222,13 +222,14 @@ function drawShootingChart(yearFilter, dropdownQuarter, dropdownTeam, date) {
     let color = zoneColors[shotZoneBasic] ||
       areaColors[shotZoneArea] || [0, 0, 0];
 
-    if (shotData.getString(i, "EVENT_TYPE") === "Made Shot") {
-      fill(color[0], color[1], color[2], 255);
-      noStroke();
-    } else {
-      noFill();
-      stroke(color[0], color[1], color[2], 255);
-    }
+    fill(
+      eventType === "Made Shot" ? color[0] : 0,
+      eventType === "Made Shot" ? color[1] : 0,
+      eventType === "Made Shot" ? color[2] : 0,
+      255
+    );
+    noStroke();
+
     let ellipseSize;
     if (
       yearFilter == "All" &&
