@@ -58,12 +58,47 @@ function draw() {
   displayShotData(yearFilter, dropdownQuarter, dropdownTeam, date);
   displayShotCount();
   displayEfficiency();
+  displayLegend();
 }
 
 function displayShotCount() {
   let shotCountDisplay = document.getElementById("shotCountDisplay");
   if (shotCountDisplay) {
     shotCountDisplay.innerHTML = `<b>Number of shots:</b> ${shots.length}`;
+  }
+}
+
+function displayLegend() {
+  let legendX = 10;
+  let legendY = 10;
+  let legendWidth = width - 20;
+  let legendHeight = 50;
+
+  fill(255);
+  stroke(0);
+  rect(legendX, legendY, legendWidth, legendHeight);
+
+  let legendItems = [
+    { color: [255, 0, 0], label: "Above the Break 3" },
+    { color: [0, 255, 0], label: "Backcourt" },
+    { color: [0, 0, 255], label: "In The Paint (Non-RA)" },
+    { color: [255, 255, 0], label: "Left Corner 3" },
+    { color: [255, 0, 255], label: "Mid-Range" },
+    { color: [128, 0, 128], label: "Right Corner 3" },
+    { color: [0, 255, 255], label: "Restricted Area" },
+    { color: [0, 0, 0], label: "Missed Shot" },
+  ];
+
+  let itemX = legendX + 10;
+  for (let i = 0; i < legendItems.length; i++) {
+    let item = legendItems[i];
+    fill(item.color);
+    noStroke();
+    ellipse(itemX, legendY + 25, 10, 10);
+    fill(0);
+    textAlign(LEFT, CENTER);
+    text(item.label, itemX + 15, legendY + 25);
+    itemX += textWidth(item.label) + 40;
   }
 }
 
