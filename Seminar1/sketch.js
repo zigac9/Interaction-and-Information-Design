@@ -32,6 +32,7 @@ function setup() {
   }
 
   buffer = createGraphics(initialWidth, initialHeight);
+  buffer.background(255);
   buffer.image(courtImg, 0, 0, initialWidth, initialHeight);
 
   width_image = initialWidth;
@@ -39,7 +40,6 @@ function setup() {
 }
 
 function draw() {
-  background(255);
   image(buffer, 0, 0);
 
   let yearFilter = document.getElementById("yearSlider").value;
