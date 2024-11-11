@@ -209,3 +209,10 @@ label[for="allCheckbox"] {
   box-sizing: border-box;
   color: #333;
 }
+
+    .highlight a {
+      background-color: yellow !important;
+      /* Highlight color */
+      color: black !important;
+      /* Text color */
+    }

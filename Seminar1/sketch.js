@@ -52,7 +52,7 @@ function draw() {
 
   let dropdownQuarter = document.getElementById("filterDropdown").value;
   let dropdownTeam = document.getElementById("teamDropdown").value;
-  let date = document.getElementById("datePicker").value.replace(/-/g, "");
+  let date = document.getElementById("datepicker").value.replace(/-/g, "");
 
   drawShootingChart(yearFilter, dropdownQuarter, dropdownTeam, date);
   displayShotData(yearFilter, dropdownQuarter, dropdownTeam, date);
@@ -137,6 +137,16 @@ function drawShootingChart(yearFilter, dropdownQuarter, dropdownTeam, date) {
     let teamVTM = shotData.getString(i, "HTM");
     let teamHTM = shotData.getString(i, "VTM");
 
+    let datePicker = document.getElementById("datepicker");
+    let clearDatePicker = document.getElementById("clearDatePicker");
+    if (yearFilter != "All") {
+      clearDatePicker.disabled = true;
+      datePicker.disabled = true;
+    } else {
+      clearDatePicker.disabled = false;
+      datePicker.disabled = false;
+    }
+
     if (
       !(
         (int(gameDateYear) == yearFilter && int(gameDateMonth) >= 10) ||
@@ -161,7 +171,11 @@ function drawShootingChart(yearFilter, dropdownQuarter, dropdownTeam, date) {
     }
 
     if (dropdownTeam != "All") {
-      if (dropdownTeam != teamVTM && dropdownTeam != teamHTM) {
+      if (
+        dropdownTeam != teamVTM &&
+        dropdownTeam != teamHTM &&
+        document.getElementById("teamDropdown").disabled == false
+      ) {
         continue;
       }
     }
@@ -188,11 +202,15 @@ function drawShootingChart(yearFilter, dropdownQuarter, dropdownTeam, date) {
 
       if (opposingTeam) {
         let teamDropdown = document.getElementById("teamDropdown");
+        let showAllYears = document.getElementById("allCheckbox");
+        showAllYears.disabled = true;
         teamDropdown.value = opposingTeam;
         teamDropdown.disabled = true;
       }
     } else {
       let teamDropdown = document.getElementById("teamDropdown");
+      let showAllYears = document.getElementById("allCheckbox");
+      showAllYears.disabled = false;
       teamDropdown.value = "All";
       teamDropdown.disabled = false;
     }
