@@ -3,7 +3,7 @@ body,
 html {
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  /* overflow: hidden; */
   font-family: 'Arial', sans-serif;
   height: 100%;
 }
@@ -36,10 +36,11 @@ html {
 
 /* Header styles */
 h1 {
-  font-size: 1.8em;
+  font-size: 1.6em;
   color: #333;
   margin-bottom: 20px;
   font-weight: bold;
+  margin-block-start: 0em;
 }
 
 /* Slider container and label styles */
@@ -131,7 +132,7 @@ h1 {
 }
 
 label[for="allCheckbox"] {
-  font-size: 1.1em;
+  font-size: 1em;
   color: #555;
 }
 
@@ -197,4 +198,14 @@ label[for="allCheckbox"] {
 .dropdownfilter option {
   padding: 10px;
   font-size: 14px;
+}
+
+.dropdownfilter input[type="date"] {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  color: #333;
 }

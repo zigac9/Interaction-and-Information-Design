@@ -15,7 +15,7 @@ function preload() {
 }
 
 function setup() {
-  frameRate(5);
+  frameRate(3);
 
   let initialWidth = windowWidth;
   let initialHeight = windowWidth / aspectRatio;
@@ -52,9 +52,10 @@ function draw() {
 
   let dropdownQuarter = document.getElementById("filterDropdown").value;
   let dropdownTeam = document.getElementById("teamDropdown").value;
+  let date = document.getElementById("datePicker").value.replace(/-/g, "");
 
-  drawShootingChart(yearFilter, dropdownQuarter, dropdownTeam);
-  displayShotData(yearFilter, dropdownQuarter, dropdownTeam);
+  drawShootingChart(yearFilter, dropdownQuarter, dropdownTeam, date);
+  displayShotData(yearFilter, dropdownQuarter, dropdownTeam, date);
   displayShotCount();
   displayEfficiency();
 }
@@ -97,7 +98,7 @@ function windowResized() {
   height_image = newHeight;
 }
 
-function drawShootingChart(yearFilter, dropdownQuarter, dropdownTeam) {
+function drawShootingChart(yearFilter, dropdownQuarter, dropdownTeam, date) {
   let zoneColors = {
     "Above the Break 3": [255, 0, 0],
     Backcourt: [0, 255, 0],
@@ -131,6 +132,7 @@ function drawShootingChart(yearFilter, dropdownQuarter, dropdownTeam) {
     let gameDate = shotData.getString(i, "GAME_DATE");
     let gameDateYear = gameDate.toString().substring(0, 4);
     let gameDateMonth = gameDate.toString().substring(4, 6);
+    let gameDateDay = gameDate.toString().substring(6, 8);
     let period = shotData.getString(i, "PERIOD");
     let teamVTM = shotData.getString(i, "HTM");
     let teamHTM = shotData.getString(i, "VTM");
@@ -164,6 +166,37 @@ function drawShootingChart(yearFilter, dropdownQuarter, dropdownTeam) {
       }
     }
 
+    if (date != "") {
+      let dateYear = date.substring(0, 4);
+      let dateMonth = date.substring(4, 6);
+      let dateDay = date.substring(6, 8);
+
+      if (
+        gameDateYear != dateYear ||
+        gameDateMonth != dateMonth ||
+        gameDateDay != dateDay
+      ) {
+        continue;
+      }
+
+      let opposingTeam = null;
+      if (teamVTM !== "DAL") {
+        opposingTeam = teamVTM;
+      } else if (teamHTM !== "DAL") {
+        opposingTeam = teamHTM;
+      }
+
+      if (opposingTeam) {
+        let teamDropdown = document.getElementById("teamDropdown");
+        teamDropdown.value = opposingTeam;
+        teamDropdown.disabled = true;
+      }
+    } else {
+      let teamDropdown = document.getElementById("teamDropdown");
+      teamDropdown.value = "All";
+      teamDropdown.disabled = false;
+    }
+
     let x = map(locX, -250, 250, 0, width);
     let y = map(locY, -50, 418, height, 0);
     strokeWeight(2);
@@ -182,7 +215,8 @@ function drawShootingChart(yearFilter, dropdownQuarter, dropdownTeam) {
     if (
       yearFilter == "All" &&
       dropdownQuarter == "All" &&
-      dropdownTeam == "All"
+      dropdownTeam == "All" &&
+      date == ""
     ) {
       ellipseSize = min(width_image, height_image) * 0.01;
     } else {
@@ -231,7 +265,7 @@ function mousePressed() {
   }
 }
 
-function displayShotData(yearFilter, dropdownQuarter, dropdownTeam) {
+function displayShotData(yearFilter, dropdownQuarter, dropdownTeam, date) {
   if (clickedShot) {
     let tooltipX = clickedShot.x + 15;
     let tooltipY = clickedShot.y - 15;
@@ -299,7 +333,8 @@ function displayShotData(yearFilter, dropdownQuarter, dropdownTeam) {
     if (
       yearFilter == "All" &&
       dropdownQuarter == "All" &&
-      dropdownTeam == "All"
+      dropdownTeam == "All" &&
+      date == ""
     ) {
       ellipseSize = min(width_image, height_image) * 0.01;
     } else {
