@@ -178,19 +178,29 @@ label[for="allCheckbox"] {
   /* Text color */
 }
 
-#shotCountDisplay {
+#filterbyQuarter {
+  margin-top: 20px;
+  font-family: Arial, sans-serif;
+}
+
+#filterbyQuarter label {
+  display: block;
   font-weight: bold;
-  /* Bold text for shot count */
+  color: #333;
+  margin-bottom: 5px;
 }
 
-#efficiencyDisplay {
-  font-size: 12px;
-  /* Smaller font size for efficiency display */
+#filterbyQuarter select {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  color: #333;
 }
 
-#lastEfficiencyDisplay {
-  font-size: 12px;
-  /* Smaller font size for last efficiency display */
-  font-style: italic;
-  /* Italic text for last efficiency */
+#filterbyQuarter option {
+  padding: 10px;
+  font-size: 14px;
 }

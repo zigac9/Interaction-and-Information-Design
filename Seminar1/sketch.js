@@ -42,8 +42,10 @@ function draw() {
     yearFilter = parseInt(yearFilter);
   }
 
-  drawShootingChart(yearFilter);
-  displayShotData(yearFilter);
+  let dropdownQuarter = document.getElementById("filterDropdown").value;
+
+  drawShootingChart(yearFilter, dropdownQuarter);
+  displayShotData(yearFilter, dropdownQuarter);
   displayShotCount();
   displayEfficiency();
 }
@@ -51,18 +53,22 @@ function draw() {
 function displayShotCount() {
   let shotCountDisplay = document.getElementById("shotCountDisplay");
   if (shotCountDisplay) {
-    shotCountDisplay.innerHTML = `Number of shots: ${shots.length}`;
+    shotCountDisplay.innerHTML = `<b>Number of shots:</b> ${shots.length}`;
   }
 }
+
 function displayEfficiency() {
   let efficiencyDisplay = document.getElementById("efficiencyDisplay");
   if (efficiencyDisplay) {
-    let efficiencyText = "Efficiency:<br>";
+    let efficiencyText =
+      "<div style='font-size: 18px; font-weight:bold; padding-bottom:5px;'><b>Efficiency:</b></div>";
     let keys = Object.keys(combinedEfficiency).sort(); // Sort keys alphabetically
     for (let key of keys) {
       let efficiency =
         combinedEfficiency[key].made / combinedEfficiency[key].attempted;
-      efficiencyText += `${key}: ${(efficiency * 100).toFixed(2)}%<br>`;
+      efficiencyText += `<div style="padding: 5px 0;"><b>${key}:</b> ${(
+        efficiency * 100
+      ).toFixed(2)}%</div>`;
     }
     efficiencyDisplay.innerHTML = efficiencyText;
   }
@@ -82,7 +88,7 @@ function windowResized() {
   height_image = newHeight;
 }
 
-function drawShootingChart(yearFilter) {
+function drawShootingChart(yearFilter, dropdownQuarter) {
   let zoneColors = {
     "Above the Break 3": [255, 0, 0],
     Backcourt: [0, 255, 0],
@@ -116,6 +122,7 @@ function drawShootingChart(yearFilter) {
     let gameDate = shotData.getString(i, "GAME_DATE");
     let gameDateYear = gameDate.toString().substring(0, 4);
     let gameDateMonth = gameDate.toString().substring(4, 6);
+    let period = shotData.getString(i, "PERIOD");
 
     if (
       !(
@@ -127,9 +134,22 @@ function drawShootingChart(yearFilter) {
       continue;
     }
 
+    if (dropdownQuarter != "All") {
+      let quarter =
+        dropdownQuarter == "Overtime 1"
+          ? 5
+          : dropdownQuarter == "Overtime 2"
+          ? 6
+          : parseInt(dropdownQuarter, 10);
+
+      if (quarter != period) {
+        continue;
+      }
+    }
+
     let x = map(locX, -250, 250, 0, width);
     let y = map(locY, -50, 418, height, 0);
-    strokeWeight(1);
+    strokeWeight(2);
 
     let color = zoneColors[shotZoneBasic] ||
       areaColors[shotZoneArea] || [0, 0, 0];
@@ -190,7 +210,7 @@ function mousePressed() {
   }
 }
 
-function displayShotData(yearFilter) {
+function displayShotData(yearFilter, dropdownQuarter) {
   if (clickedShot) {
     let tooltipX = clickedShot.x + 15;
     let tooltipY = clickedShot.y - 15;
@@ -254,8 +274,8 @@ function displayShotData(yearFilter) {
 
     noFill();
     stroke(0);
-    strokeWeight(2);
-    if (yearFilter == "All") {
+    strokeWeight(3);
+    if (yearFilter == "All" || dropdownQuarter == "All") {
       ellipseSize = min(width_image, height_image) * 0.01;
     } else {
       ellipseSize = min(width_image, height_image) * 0.02;

@@ -44,6 +44,20 @@
         <input type="checkbox" id="allCheckbox" onchange="toggleAllYearFilter(this)" checked>
         <label for="allCheckbox">Show All Years</label>
       </div>
+      <div id="filterbyQuarter">
+        <label for="filterDropdown">Filter by Quarter:</label>
+        <select id="filterDropdown">
+          <option value="All">All</option>
+          <option value="1 quarter">1 quarter</option>
+          <option value="2 quarter">2 quarter</option>
+          <option value="3 quarter">3 quarter</option>
+          <option value="4 quarter">4 quarter</option>
+          <option value="Overtime 1">Overtime 1</option>
+          <option value="Overtime 2">Overtime 2</option>
+        </select>
+      </div>
+      <hr>
+
       <div id="shotCountDisplay" class="info-display"></div>
 
       <div id="efficiencyDisplay" class="info-display"></div>
