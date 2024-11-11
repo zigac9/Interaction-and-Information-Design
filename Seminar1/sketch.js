@@ -24,7 +24,7 @@ function setup() {
   let canvas = createCanvas(initialWidth, initialHeight);
   let container = document.getElementById("canvasContainer");
   if (container) {
-    container.appendChild(canvas.elt); // Use canvas.elt to get the HTML element
+    container.appendChild(canvas.elt);
   }
   width_image = initialWidth;
   height_image = initialHeight;
@@ -63,7 +63,7 @@ function displayEfficiency() {
   if (efficiencyDisplay) {
     let efficiencyText =
       "<div style='font-size: 18px; font-weight:bold; padding-bottom:5px;'><b>Efficiency:</b></div>";
-    let keys = Object.keys(combinedEfficiency).sort(); // Sort keys alphabetically
+    let keys = Object.keys(combinedEfficiency).sort();
     for (let key of keys) {
       let efficiency =
         combinedEfficiency[key].made / combinedEfficiency[key].attempted;
@@ -302,7 +302,6 @@ function displayShotData(yearFilter, dropdownQuarter, dropdownTeam) {
 }
 
 function updateYearLabel(value) {
-  // Calculate the range for the selected year
   let startYear = value;
   let endYear = parseInt(value) + 1;
   document.getElementById(
