@@ -178,19 +178,19 @@ label[for="allCheckbox"] {
   /* Text color */
 }
 
-#filterbyQuarter {
+.dropdownfilter {
   margin-top: 20px;
   font-family: Arial, sans-serif;
 }
 
-#filterbyQuarter label {
+.dropdownfilter label {
   display: block;
   font-weight: bold;
   color: #333;
   margin-bottom: 5px;
 }
 
-#filterbyQuarter select {
+.dropdownfilter select {
   width: 100%;
   padding: 8px;
   font-size: 14px;
@@ -200,7 +200,7 @@ label[for="allCheckbox"] {
   color: #333;
 }
 
-#filterbyQuarter option {
+.dropdownfilter option {
   padding: 10px;
   font-size: 14px;
 }

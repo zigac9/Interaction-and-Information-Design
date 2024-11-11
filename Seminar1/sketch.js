@@ -43,9 +43,12 @@ function draw() {
   }
 
   let dropdownQuarter = document.getElementById("filterDropdown").value;
+  let dropdownTeam = document.getElementById("teamDropdown").value;
 
-  drawShootingChart(yearFilter, dropdownQuarter);
-  displayShotData(yearFilter, dropdownQuarter);
+  console.log(dropdownTeam);
+
+  drawShootingChart(yearFilter, dropdownQuarter, dropdownTeam);
+  displayShotData(yearFilter, dropdownQuarter, dropdownTeam);
   displayShotCount();
   displayEfficiency();
 }
@@ -88,7 +91,7 @@ function windowResized() {
   height_image = newHeight;
 }
 
-function drawShootingChart(yearFilter, dropdownQuarter) {
+function drawShootingChart(yearFilter, dropdownQuarter, dropdownTeam) {
   let zoneColors = {
     "Above the Break 3": [255, 0, 0],
     Backcourt: [0, 255, 0],
@@ -123,6 +126,8 @@ function drawShootingChart(yearFilter, dropdownQuarter) {
     let gameDateYear = gameDate.toString().substring(0, 4);
     let gameDateMonth = gameDate.toString().substring(4, 6);
     let period = shotData.getString(i, "PERIOD");
+    let teamVTM = shotData.getString(i, "HTM");
+    let teamHTM = shotData.getString(i, "VTM");
 
     if (
       !(
@@ -147,6 +152,12 @@ function drawShootingChart(yearFilter, dropdownQuarter) {
       }
     }
 
+    if (dropdownTeam != "All") {
+      if (dropdownTeam != teamVTM && dropdownTeam != teamHTM) {
+        continue;
+      }
+    }
+
     let x = map(locX, -250, 250, 0, width);
     let y = map(locY, -50, 418, height, 0);
     strokeWeight(2);
@@ -162,7 +173,11 @@ function drawShootingChart(yearFilter, dropdownQuarter) {
       stroke(color[0], color[1], color[2], 255);
     }
     let ellipseSize;
-    if (yearFilter == "All") {
+    if (
+      yearFilter == "All" &&
+      dropdownQuarter == "All" &&
+      dropdownTeam == "All"
+    ) {
       ellipseSize = min(width_image, height_image) * 0.01;
     } else {
       ellipseSize = min(width_image, height_image) * 0.02;
@@ -210,7 +225,7 @@ function mousePressed() {
   }
 }
 
-function displayShotData(yearFilter, dropdownQuarter) {
+function displayShotData(yearFilter, dropdownQuarter, dropdownTeam) {
   if (clickedShot) {
     let tooltipX = clickedShot.x + 15;
     let tooltipY = clickedShot.y - 15;
@@ -275,7 +290,11 @@ function displayShotData(yearFilter, dropdownQuarter) {
     noFill();
     stroke(0);
     strokeWeight(3);
-    if (yearFilter == "All" || dropdownQuarter == "All") {
+    if (
+      yearFilter == "All" &&
+      dropdownQuarter == "All" &&
+      dropdownTeam == "All"
+    ) {
       ellipseSize = min(width_image, height_image) * 0.01;
     } else {
       ellipseSize = min(width_image, height_image) * 0.02;
