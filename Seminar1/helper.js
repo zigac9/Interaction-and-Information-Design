@@ -437,6 +437,7 @@ document
   .addEventListener("click", function () {
     document.getElementById("datepicker").value = "";
     document.getElementById("teamDropdown").disabled = false;
+  });
 
 function updateYearLabel(value) {
   let startYear = value;

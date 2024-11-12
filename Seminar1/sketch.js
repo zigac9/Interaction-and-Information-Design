@@ -8,6 +8,7 @@ let courtImg;
 let width_image = 1352;
 let height_image = 1273;
 let aspectRatio = width_image / height_image;
+let pointsScored = 0;
 
 function preload() {
   courtImg = loadImage("./images/NBA_court.png");
@@ -64,7 +65,7 @@ function draw() {
 function displayShotCount() {
   let shotCountDisplay = document.getElementById("shotCountDisplay");
   if (shotCountDisplay) {
-    shotCountDisplay.innerHTML = `<b>Number of shots:</b> ${shots.length}`;
+    shotCountDisplay.innerHTML = `<b>Number of shots:</b> ${shots.length}<br><b>Points Scored:</b> ${pointsScored}`;
   }
 }
 
@@ -155,6 +156,7 @@ function drawShootingChart(yearFilter, dropdownQuarter, dropdownTeam, date) {
 
   shots = [];
   combinedEfficiency = {};
+  pointsScored = 0;
   for (let i = 0; i < shotData.getRowCount(); i++) {
     let locX = shotData.getNum(i, "LOC_X");
     let locY = shotData.getNum(i, "LOC_Y");
@@ -248,6 +250,14 @@ function drawShootingChart(yearFilter, dropdownQuarter, dropdownTeam, date) {
       showAllYears.disabled = false;
       teamDropdown.value = "All";
       teamDropdown.disabled = false;
+    }
+
+    if (eventType === "Made Shot") {
+      if (shotType === "3PT Field Goal") {
+        pointsScored += 3;
+      } else if (shotType === "2PT Field Goal") {
+        pointsScored += 2;
+      }
     }
 
     let x = map(locX, -250, 250, 0, width);

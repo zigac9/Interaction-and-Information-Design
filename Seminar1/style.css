@@ -27,7 +27,7 @@ html {
 /* Sidebar styles */
 #sidebar {
   flex: 1;
-  padding: 20px;
+  padding: 10px;
   background-color: #fff;
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
   flex-direction: column;
@@ -38,14 +38,14 @@ html {
 h1 {
   font-size: 1.6em;
   color: #333;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   font-weight: bold;
   margin-block-start: 0em;
 }
 
 /* Slider container and label styles */
 .slider-container {
-  margin-top: 20px;
+  margin-top: 15px;
   display: flex;
   flex-direction: column;
 }
