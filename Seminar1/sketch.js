@@ -397,22 +397,3 @@ function displayShotData(yearFilter, dropdownQuarter, dropdownTeam, date) {
     ellipse(clickedShot.x, clickedShot.y, ellipseSize, ellipseSize);
   }
 }
-
-function updateYearLabel(value) {
-  let startYear = value;
-  let endYear = parseInt(value) + 1;
-  document.getElementById(
-    "selectedYear"
-  ).textContent = `${startYear}/${endYear}`;
-  redraw();
-}
-
-function toggleAllYearFilter(checkbox) {
-  if (checkbox.checked) {
-    document.getElementById("yearSlider").disabled = true;
-    document.getElementById("selectedYear").textContent = "All Years";
-  } else {
-    document.getElementById("yearSlider").disabled = false;
-    updateYearLabel(document.getElementById("yearSlider").value);
-  }
-}
