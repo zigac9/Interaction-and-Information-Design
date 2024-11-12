@@ -1,0 +1,218 @@
+/* Reset default margin and padding for body and html */
+body,
+html {
+  margin: 0;
+  padding: 0;
+  /* overflow: hidden; */
+  font-family: 'Arial', sans-serif;
+  height: 100%;
+}
+
+/* Flex container for full-screen layout */
+.container {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+}
+
+/* Canvas container for centering content */
+#canvasContainer {
+  flex: 2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #eaeaea;
+}
+
+/* Sidebar styles */
+#sidebar {
+  flex: 1;
+  padding: 10px;
+  background-color: #fff;
+  box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Header styles */
+h1 {
+  font-size: 1.6em;
+  color: #333;
+  margin-bottom: 15px;
+  font-weight: bold;
+  margin-block-start: 0em;
+}
+
+/* Slider container and label styles */
+.slider-container {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+#yearSlider {
+  width: 100%;
+  height: 8px;
+  border-radius: 5px;
+  background: #ddd;
+  outline: none;
+  -webkit-appearance: none;
+  transition: background 0.3s ease;
+}
+
+#yearSlider:hover {
+  background: #bbb;
+}
+
+#yearSlider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #007bff;
+  cursor: pointer;
+}
+
+#yearSlider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #007bff;
+  cursor: pointer;
+}
+
+/* Disabled state styling */
+#yearSlider:disabled {
+  background: #f0f0f0;
+  /* Lighter background */
+  cursor: not-allowed;
+  /* Change cursor to indicate the slider is disabled */
+}
+
+#yearSlider:disabled::-webkit-slider-thumb {
+  background: #ccc;
+  /* Lighter color for the thumb */
+  cursor: not-allowed;
+}
+
+#yearSlider:disabled::-moz-range-thumb {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+#selectedYear {
+  font-size: 1.2em;
+  color: #007bff;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* Custom breakpoints styling */
+#sliderBreakpoints {
+    display: none;
+}
+
+.breakpoint {
+  cursor: pointer;
+}
+
+.breakpoint:hover {
+  color: #007bff;
+}
+
+/* Checkbox styles for "Show All Years" */
+#allOption {
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+}
+
+#allCheckbox {
+  margin-right: 10px;
+}
+
+label[for="allCheckbox"] {
+  font-size: 1em;
+  color: #555;
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+  }
+
+  #canvasContainer {
+    flex: 1;
+    margin-bottom: 20px;
+  }
+
+  #sidebar {
+    flex: none;
+    width: 100%;
+    box-shadow: none;
+  }
+}
+
+.info-display {
+  background-color: #f0f0f0;
+  /* Light grey background */
+  border: 1px solid #ccc;
+  /* Light grey border */
+  border-radius: 5px;
+  /* Rounded corners */
+  padding: 10px;
+  /* Padding inside the box */
+  margin-top: 10px;
+  /* Space above the box */
+  font-family: Arial, sans-serif;
+  /* Font family */
+  font-size: 14px;
+  /* Font size */
+  color: #333;
+  /* Text color */
+}
+
+.dropdownfilter {
+  margin-top: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.dropdownfilter label {
+  display: block;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.dropdownfilter select {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  color: #333;
+}
+
+.dropdownfilter option {
+  padding: 10px;
+  font-size: 14px;
+}
+
+.dropdownfilter input[type="date"] {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  color: #333;
+}
+
+    .highlight a {
+      background-color: yellow !important;
+      /* Highlight color */
+      color: black !important;
+      /* Text color */
+    }
