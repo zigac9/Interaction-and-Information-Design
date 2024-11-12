@@ -14,6 +14,7 @@ My interactive data visualization is available at [https://shootingchart-seminar
 - **Shot Details**: By clicking on a shot, users can view detailed information about that shot, including the shot zone, action type, shot type, and event type.
 - **Efficiency Display**: The application displays the efficiency of shots from different zones, allowing users to compare the performance in various situations.
 - **Shot Count Display**: The application displays the total number of shots taken.
+- **Points Scored Display**: The application displays the total points scored, but free throws are not included.
 
 ## How to Use
 
@@ -25,6 +26,7 @@ My interactive data visualization is available at [https://shootingchart-seminar
 6. **Shot Details**: Click on a shot to view detailed information about that shot.
 7. **Efficiency Display**: View the efficiency of shots from different zones.
 8. **Shot Count Display**: View the total number of shots taken.
+9. **Points Scored Display**: View the total points scored, excluding free throws.
 
 ## Technologies Used
 
@@ -35,3 +37,4 @@ My interactive data visualization is available at [https://shootingchart-seminar
 - **nba_api**: For fetching the shot data from the NBA API.
 - **Pandas**: For processing the shot data.
 - **Netlify**: For deploying the application.
+  
