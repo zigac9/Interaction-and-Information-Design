@@ -194,29 +194,6 @@ function drawShootingChart(yearFilter, dropdownQuarter, dropdownTeam, date) {
       continue;
     }
 
-    if (dropdownQuarter != "All") {
-      let quarter =
-        dropdownQuarter == "Overtime 1"
-          ? 5
-          : dropdownQuarter == "Overtime 2"
-          ? 6
-          : parseInt(dropdownQuarter, 10);
-
-      if (quarter != period) {
-        continue;
-      }
-    }
-
-    if (dropdownTeam != "All") {
-      if (
-        dropdownTeam != teamVTM &&
-        dropdownTeam != teamHTM &&
-        document.getElementById("teamDropdown").disabled == false
-      ) {
-        continue;
-      }
-    }
-
     if (date != "") {
       let dateYear = date.substring(0, 4);
       let dateMonth = date.substring(4, 6);
@@ -237,6 +214,8 @@ function drawShootingChart(yearFilter, dropdownQuarter, dropdownTeam, date) {
         opposingTeam = teamHTM;
       }
 
+      console.log(opposingTeam);
+
       if (opposingTeam) {
         let teamDropdown = document.getElementById("teamDropdown");
         let showAllYears = document.getElementById("allCheckbox");
@@ -248,8 +227,30 @@ function drawShootingChart(yearFilter, dropdownQuarter, dropdownTeam, date) {
       let teamDropdown = document.getElementById("teamDropdown");
       let showAllYears = document.getElementById("allCheckbox");
       showAllYears.disabled = false;
-      teamDropdown.value = "All";
       teamDropdown.disabled = false;
+    }
+
+    if (dropdownQuarter != "All") {
+      let quarter =
+        dropdownQuarter == "Overtime 1"
+          ? 5
+          : dropdownQuarter == "Overtime 2"
+          ? 6
+          : parseInt(dropdownQuarter, 10);
+
+      if (quarter != period) {
+        continue;
+      }
+    }
+
+    if (teamDropdown.value != "All") {
+      if (
+        teamDropdown.value != teamVTM &&
+        teamDropdown.value != teamHTM &&
+        document.getElementById("teamDropdown").disabled == false
+      ) {
+        continue;
+      }
     }
 
     if (eventType === "Made Shot") {
