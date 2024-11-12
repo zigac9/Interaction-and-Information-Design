@@ -214,8 +214,6 @@ function drawShootingChart(yearFilter, dropdownQuarter, dropdownTeam, date) {
         opposingTeam = teamHTM;
       }
 
-      console.log(opposingTeam);
-
       if (opposingTeam) {
         let teamDropdown = document.getElementById("teamDropdown");
         let showAllYears = document.getElementById("allCheckbox");
