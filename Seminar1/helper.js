@@ -409,6 +409,8 @@ var dates = [
   new Date(2024, 10, 6),
   new Date(2024, 10, 8),
   new Date(2024, 10, 10),
+  new Date(2024, 10, 14),
+  new Date(2024, 10, 16),
 ];
 
 $(function () {
