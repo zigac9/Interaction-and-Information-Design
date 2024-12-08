@@ -69,7 +69,7 @@ async function setup() {
   video.size(800, 635);
   video.hide();
 
-  handposeModel = await handpose.load();
+  // handposeModel = await handpose.load();
 }
 
 function draw() {
@@ -98,14 +98,22 @@ function draw() {
 }
 
 function areBothHandsOpen(predictions) {
-  return predictions.every((hand) => {
+  return predictions.every((hand, index) => {
     const thumbIsOpen = hand[4].y < hand[3].y;
     const indexIsOpen = hand[8].y < hand[7].y;
     const middleIsOpen = hand[12].y < hand[11].y;
     const ringIsOpen = hand[16].y < hand[15].y;
     const pinkyIsOpen = hand[20].y < hand[19].y;
+    // console.log(
+    //   "hand", index,
+    //   "thumbIsOpen", thumbIsOpen,
+    //   "indexIsOpen", indexIsOpen,
+    //   "middleIsOpen", middleIsOpen,
+    //   "ringIsOpen", ringIsOpen,
+    //   "pinkyIsOpen", pinkyIsOpen
+    // )
     return (
-      thumbIsOpen && indexIsOpen && middleIsOpen && ringIsOpen && pinkyIsOpen
+      indexIsOpen
     );
   });
 }
