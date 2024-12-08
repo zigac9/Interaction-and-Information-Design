@@ -21,8 +21,8 @@ var fruitsImgs = [],
 var livesImgs = [],
   livesImgs2 = [];
 var boom, spliced, missed, over, start;
-var fruitInterval = 60; // Initial interval for displaying fruits
-var intervalDecreaseRate = 0.99; // Rate at which the interval decreases
+let handposeModel;
+let video;
 
 function preload() {
   // LOAD SOUNDS
@@ -58,12 +58,18 @@ function preload() {
   gameOverImg = loadImage("images/game-over.png");
 }
 
-function setup() {
+async function setup() {
   cnv = createCanvas(800, 635);
   sword = new Sword(color("#FFFFFF"));
   frameRate(60);
   score = 0;
   lives = 3;
+
+  video = createCapture(VIDEO);
+  video.size(800, 635);
+  video.hide();
+
+  handposeModel = await handpose.load();
 }
 
 function draw() {
@@ -76,17 +82,44 @@ function draw() {
   image(this.newGameImg, 310, 360, 200, 200);
   image(this.fruitImg, 365, 415, 90, 90);
 
-  cnv.mouseClicked(check);
+  if (detections && detections.multiHandLandmarks) {
+    const predictions = detections.multiHandLandmarks;
+    console.log(predictions.length);
+    drawHands(predictions);
+    if (predictions.length === 2 && areBothHandsOpen(predictions)) {
+      start.play();
+      isPlay = true;
+    }
+  }
+
   if (isPlay) {
     game();
   }
 }
 
-function check() {
-  // Check for game start
-  if (!isPlay && mouseX > 300 && mouseX < 520 && mouseY > 350 && mouseY < 550) {
-    start.play();
-    isPlay = true;
+function areBothHandsOpen(predictions) {
+  return predictions.every((hand) => {
+    const thumbIsOpen = hand[4].y < hand[3].y;
+    const indexIsOpen = hand[8].y < hand[7].y;
+    const middleIsOpen = hand[12].y < hand[11].y;
+    const ringIsOpen = hand[16].y < hand[15].y;
+    const pinkyIsOpen = hand[20].y < hand[19].y;
+    return (
+      thumbIsOpen && indexIsOpen && middleIsOpen && ringIsOpen && pinkyIsOpen
+    );
+  });
+}
+
+function drawHands(predictions) {
+  for (let i = 0; i < predictions.length; i++) {
+    const landmarks = predictions[i];
+
+    for (let j = 0; j < landmarks.length; j++) {
+      const { x, y } = landmarks[j];
+      fill(0, 255, 0);
+      noStroke();
+      ellipse(x * width, y * height, 10, 10);
+    }
   }
 }
 
@@ -97,12 +130,11 @@ function game() {
     // Draw sword
     sword.swipe(mouseX, mouseY);
   }
-  if (frameCount % fruitInterval === 0) {
+  if (frameCount % 5 === 0) {
     if (noise(frameCount) > 0.69) {
       fruit.push(randomFruit()); // Display new fruit
     }
   }
-  fruitInterval = max(3, fruitInterval * intervalDecreaseRate);
 
   points = 0;
   for (var i = fruit.length - 1; i >= 0; i--) {
@@ -213,13 +245,4 @@ function gameOver() {
   image(this.gameOverImg, 155, 260, 490, 85);
   lives = 0;
   console.log("lost");
-
-  // Make the game restart
-  // isPlay = false;
-  // score = 0;
-  // lives = 3;
-  // x = 0;
-  // fruit = [];
-  // sword = new Sword(color("#FFFFFF"));
-  // loop();
 }
