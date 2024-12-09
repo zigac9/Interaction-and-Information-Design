@@ -23,6 +23,8 @@ var livesImgs = [],
 var boom, spliced, missed, over, start;
 let handposeModel;
 let video;
+let openHandFrames = 0;
+const requiredOpenFrames = 5;
 
 function preload() {
   // LOAD SOUNDS
@@ -68,8 +70,6 @@ async function setup() {
   video = createCapture(VIDEO);
   video.size(800, 635);
   video.hide();
-
-  // handposeModel = await handpose.load();
 }
 
 function draw() {
@@ -84,9 +84,18 @@ function draw() {
 
   if (detections && detections.multiHandLandmarks) {
     const predictions = detections.multiHandLandmarks;
-    console.log(predictions.length);
+    // console.log(predictions.length);
     drawHands(predictions);
+
+    // Check if both hands are open
     if (predictions.length === 2 && areBothHandsOpen(predictions)) {
+      openHandFrames++; // Increment counter if hands are open
+    } else {
+      openHandFrames = 0; // Reset counter if hands are not open
+    }
+
+    // Trigger game if hands are open for required frames
+    if (openHandFrames >= requiredOpenFrames) {
       start.play();
       isPlay = true;
     }
@@ -99,22 +108,36 @@ function draw() {
 
 function areBothHandsOpen(predictions) {
   return predictions.every((hand, index) => {
-    const thumbIsOpen = hand[4].y < hand[3].y;
-    const indexIsOpen = hand[8].y < hand[7].y;
-    const middleIsOpen = hand[12].y < hand[11].y;
-    const ringIsOpen = hand[16].y < hand[15].y;
-    const pinkyIsOpen = hand[20].y < hand[19].y;
+    // Threshold for openness (adjust based on your use case)
+    const opennessThreshold = 0.02;
+
+    const thumbIsOpen = Math.abs(hand[4].y - hand[3].y) > opennessThreshold;
+    const indexIsOpen = Math.abs(hand[8].y - hand[7].y) > opennessThreshold;
+    const middleIsOpen = Math.abs(hand[12].y - hand[11].y) > opennessThreshold;
+    const ringIsOpen = Math.abs(hand[16].y - hand[15].y) > opennessThreshold;
+    const pinkyIsOpen = Math.abs(hand[20].y - hand[19].y) > opennessThreshold;
+
+    // Logging for debugging
     // console.log(
-    //   "hand", index,
+    //   `Hand ${index}:`,
     //   "thumbIsOpen", thumbIsOpen,
     //   "indexIsOpen", indexIsOpen,
     //   "middleIsOpen", middleIsOpen,
     //   "ringIsOpen", ringIsOpen,
     //   "pinkyIsOpen", pinkyIsOpen
-    // )
-    return (
-      indexIsOpen
-    );
+    // );
+
+    // Require majority of fingers to be open
+    const fingersOpen = [
+      thumbIsOpen,
+      indexIsOpen,
+      middleIsOpen,
+      ringIsOpen,
+      pinkyIsOpen,
+    ].filter(isOpen => isOpen).length;
+
+    // Adjust this threshold if needed (e.g., 4 means at least 4 fingers are open)
+    return fingersOpen >= 4;
   });
 }
 
@@ -252,5 +275,5 @@ function gameOver() {
   background(bg);
   image(this.gameOverImg, 155, 260, 490, 85);
   lives = 0;
-  console.log("lost");
+  // console.log("lost");
 }
