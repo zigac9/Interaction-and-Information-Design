@@ -50,25 +50,25 @@ function preload() {
   for (var i = 0; i < 3; i++) {
     livesImgs2[i] = loadImage("images/xx" + (i + 1) + ".png");
   }
-  bg = loadImage("images/background.jpg");
+  bg = loadImage("images/background.png");
   foregroundImg = loadImage("images/home-mask.png");
-  fruitLogo = loadImage("images/fruit.png");
+  fruitLogo = loadImage("images/UL_FRI_logo.png");
   ninjaLogo = loadImage("images/ninja.png");
   scoreImg = loadImage("images/score.png");
-  newGameImg = loadImage("images/new-game.png");
+  newGameImg = loadImage("images/start-game.png");
   fruitImg = loadImage("images/fruitMode.png");
   gameOverImg = loadImage("images/game-over.png");
 }
 
 async function setup() {
-  cnv = createCanvas(800, 635);
+  cnv = createCanvas(1880, 880); // Updated canvas size
   sword = new Sword(color("#FFFFFF"));
   frameRate(60);
   score = 0;
   lives = 3;
 
   video = createCapture(VIDEO);
-  video.size(800, 635);
+  video.size(1880, 880); // Updated video size
   video.hide();
 }
 
@@ -76,11 +76,11 @@ function draw() {
   clear();
   background(bg);
 
-  image(this.foregroundImg, 0, 0, 800, 350);
-  image(this.fruitLogo, 40, 20, 358, 195);
-  image(this.ninjaLogo, 420, 50, 318, 165);
-  image(this.newGameImg, 310, 360, 200, 200);
-  image(this.fruitImg, 365, 415, 90, 90);
+  image(this.foregroundImg, 0, 0, 1880, 250);
+  image(this.fruitLogo, 600, 30, 300, 144);
+  image(this.ninjaLogo, 950, 0, 318, 165);
+  image(this.newGameImg, 650, 650, 600, 200);
+  // image(this.fruitImg, 365, 415, 90, 90);
 
   if (detections && detections.multiHandLandmarks) {
     const predictions = detections.multiHandLandmarks;

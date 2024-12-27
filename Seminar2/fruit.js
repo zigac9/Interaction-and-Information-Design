@@ -16,7 +16,7 @@ function Fruit(
   this.color = color;
   this.size = size;
   this.xSpeed = randomXSpeed(x);
-  this.ySpeed = random(-10.4, -7.4);
+  this.ySpeed = random(-12.4, -7.8);
   this.fruit = fruit;
   this.slicedFruit1 = slicedFruit1;
   this.slicedFruit2 = slicedFruit2;
