@@ -277,3 +277,19 @@ function gameOver() {
   lives = 0;
   // console.log("lost");
 }
+
+function keyPressed() {
+  if (lives == 0 && (key === 'r' || key === 'R')) {
+    restartGame();
+  }
+}
+
+function restartGame() {
+  score = 0;
+  lives = 3;
+  isPlay = false;
+  fruit = [];
+  openHandFrames = 0;
+  isGameOver = false; // Reset game over state
+  loop(); // Restart the game loop
+}
