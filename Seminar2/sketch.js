@@ -9,11 +9,11 @@ var gravity = 0.1;
 var sword;
 var fruit = [];
 var fruitsList = [
-  "apple",
-  "banana",
-  "peach",
-  "strawberry",
-  "watermelon",
+  "java",
+  "python",
+  "sql",
+  "html",
+  "c",
   "boom",
 ];
 var fruitsImgs = [],
@@ -24,7 +24,7 @@ var boom, spliced, missed, over, start;
 let handposeModel;
 let video;
 let openHandFrames = 0;
-const requiredOpenFrames = 5;
+const requiredOpenFrames = 10;
 
 function preload() {
   // LOAD SOUNDS
@@ -273,9 +273,8 @@ function gameOver() {
   over.play();
   clear();
   background(bg);
-  image(this.gameOverImg, 155, 260, 490, 85);
+  image(this.gameOverImg, 650, 400, 600, 110);
   lives = 0;
-  // console.log("lost");
 }
 
 function keyPressed() {
