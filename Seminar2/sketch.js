@@ -25,6 +25,7 @@ let handposeModel;
 let video;
 let openHandFrames = 0;
 const requiredOpenFrames = 10;
+const opennessThreshold = 0.02;
 
 function preload() {
   // LOAD SOUNDS
@@ -106,26 +107,19 @@ function draw() {
   }
 }
 
+function distance(p1, p2) {
+  return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
+}
+
 function areBothHandsOpen(predictions) {
-  return predictions.every((hand, index) => {
-    // Threshold for openness (adjust based on your use case)
-    const opennessThreshold = 0.02;
 
-    const thumbIsOpen = Math.abs(hand[4].y - hand[3].y) > opennessThreshold;
-    const indexIsOpen = Math.abs(hand[8].y - hand[7].y) > opennessThreshold;
-    const middleIsOpen = Math.abs(hand[12].y - hand[11].y) > opennessThreshold;
-    const ringIsOpen = Math.abs(hand[16].y - hand[15].y) > opennessThreshold;
-    const pinkyIsOpen = Math.abs(hand[20].y - hand[19].y) > opennessThreshold;
-
-    // Logging for debugging
-    // console.log(
-    //   `Hand ${index}:`,
-    //   "thumbIsOpen", thumbIsOpen,
-    //   "indexIsOpen", indexIsOpen,
-    //   "middleIsOpen", middleIsOpen,
-    //   "ringIsOpen", ringIsOpen,
-    //   "pinkyIsOpen", pinkyIsOpen
-    // );
+  // Helper function to check if a single hand is open
+  const isHandOpen = (hand) => {
+    const thumbIsOpen = distance(hand[4], hand[3]) > opennessThreshold;
+    const indexIsOpen = distance(hand[8], hand[7]) > opennessThreshold;
+    const middleIsOpen = distance(hand[12], hand[11]) > opennessThreshold;
+    const ringIsOpen = distance(hand[16], hand[15]) > opennessThreshold;
+    const pinkyIsOpen = distance(hand[20], hand[19]) > opennessThreshold;
 
     // Require majority of fingers to be open
     const fingersOpen = [
@@ -136,30 +130,90 @@ function areBothHandsOpen(predictions) {
       pinkyIsOpen,
     ].filter(isOpen => isOpen).length;
 
-    // Adjust this threshold if needed (e.g., 4 means at least 4 fingers are open)
+    // Adjust this threshold if needed
     return fingersOpen >= 4;
+  };
+
+  // Check if both hands are open
+  return predictions.every(isHandOpen);
+}
+
+
+// function isIndexFingerUp(hand) {
+//   // Check if the index finger is extended
+//   const indexIsOpen = distance(hand[8], hand[7]) > opennessThreshold;
+
+//   // Check if other fingers are closed
+//   // const thumbIsClosed = distance(hand[4], hand[3]) < opennessThreshold;
+//   const middleIsClosed = distance(hand[12], hand[10]) < opennessThreshold;
+//   const ringIsClosed = distance(hand[16], hand[14]) < opennessThreshold;
+//   const pinkyIsClosed = distance(hand[20], hand[18]) < opennessThreshold;
+
+//   return indexIsOpen && middleIsClosed && ringIsClosed && pinkyIsClosed;
+// }
+
+
+function drawHands(predictions) {
+  // Define hand connections
+  const connections = [
+    [0, 1], [1, 2], [2, 3], [3, 4], // Thumb
+    [0, 5], [5, 6], [6, 7], [7, 8], // Index finger
+    [0, 9], [9, 10], [10, 11], [11, 12], // Middle finger
+    [0, 13], [13, 14], [14, 15], [15, 16], // Ring finger
+    [0, 17], [17, 18], [18, 19], [19, 20], // Pinky
+  ];
+
+  // Iterate through each hand's predictions
+  predictions.forEach((landmarks) => {
+    drawConnections(landmarks, connections);
+    drawLandmarks(landmarks);
   });
 }
 
-function drawHands(predictions) {
-  for (let i = 0; i < predictions.length; i++) {
-    const landmarks = predictions[i];
+// Helper function to draw connections
+function drawConnections(landmarks, connections) {
+  stroke(0, 255, 0, 150); // Green color with transparency
+  strokeWeight(2);
 
-    for (let j = 0; j < landmarks.length; j++) {
-      const { x, y } = landmarks[j];
-      fill(0, 255, 0);
-      noStroke();
-      ellipse(x * width, y * height, 10, 10);
+  connections.forEach(([start, end]) => {
+    const startLandmark = landmarks[start];
+    const endLandmark = landmarks[end];
+
+    if (startLandmark && endLandmark) {
+      line(
+        startLandmark.x * width,
+        startLandmark.y * height,
+        endLandmark.x * width,
+        endLandmark.y * height
+      );
     }
-  }
+  });
 }
+
+// Helper function to draw landmarks
+function drawLandmarks(landmarks) {
+  fill(0, 0, 255, 200); // Blue color with transparency
+  noStroke();
+
+  landmarks.forEach(({ x, y }) => {
+    ellipse(x * width, y * height, 12, 12); // Smaller, consistent size
+  });
+}
+
 
 function game() {
   clear();
   background(bg);
-  if (mouseIsPressed) {
-    // Draw sword
-    sword.swipe(mouseX, mouseY);
+  if (detections && detections.multiHandLandmarks) {
+    const predictions = detections.multiHandLandmarks;
+    drawHands(predictions);
+
+    // Update sword position based on thumb of the first hand
+    // if (predictions.length > 0 && isIndexFingerUp(predictions[0])) {
+    if (predictions.length > 0) {
+      const indexFinger = predictions[0][8];
+      sword.swipe(indexFinger.x * width, indexFinger.y * height);
+    }
   }
   if (frameCount % 5 === 0) {
     if (noise(frameCount) > 0.69) {
