@@ -93,6 +93,8 @@ function draw() {
 
   if (!isPlay && detections && detections.multiHandLandmarks) {
     const predictions = detections.multiHandLandmarks;
+
+    // console.log(predictions)
     // console.log(predictions.length);
     drawHands(predictions);
 
@@ -147,18 +149,18 @@ function areBothHandsOpen(predictions) {
 }
 
 
-// function isIndexFingerUp(hand) {
-//   // Check if the index finger is extended
-//   const indexIsOpen = distance(hand[8], hand[7]) > opennessThreshold;
+function isIndexFingerUp(hand) {
+  // Check if the index finger is extended
+  const indexIsOpen = distance(hand[8], hand[7]) > opennessThreshold;
 
-//   // Check if other fingers are closed
-//   // const thumbIsClosed = distance(hand[4], hand[3]) < opennessThreshold;
-//   const middleIsClosed = distance(hand[12], hand[10]) < opennessThreshold;
-//   const ringIsClosed = distance(hand[16], hand[14]) < opennessThreshold;
-//   const pinkyIsClosed = distance(hand[20], hand[18]) < opennessThreshold;
+  // Check if other fingers are closed
+  // const thumbIsClosed = distance(hand[4], hand[3]) < opennessThreshold;
+  // const middleIsClosed = distance(hand[12], hand[10]) < opennessThreshold;
+  // const ringIsClosed = distance(hand[16], hand[14]) < opennessThreshold;
+  // const pinkyIsClosed = distance(hand[20], hand[18]) < opennessThreshold;
 
-//   return indexIsOpen && middleIsClosed && ringIsClosed && pinkyIsClosed;
-// }
+  return indexIsOpen;
+}
 
 
 function drawHands(predictions) {
@@ -210,17 +212,32 @@ function drawLandmarks(landmarks) {
   });
 }
 
+function isLeftHand(hand) {
+  if (!hand || hand.length < 21) {
+    throw new Error("Invalid hand landmarks provided.");
+  }
+
+  // The thumb tip is at index 4 and the pinky tip is at index 20 in MediaPipe's hand landmarks.
+  const thumbTip = hand[4];
+  const pinkyTip = hand[20];
+
+  // If the x-coordinate of the thumb tip is less than the x-coordinate of the pinky tip, it's a left hand.
+  return thumbTip.x < pinkyTip.x;
+}
+
 
 function game() {
   clear();
   background(bg);
+  let leftHand = null;
   if (detections && detections.multiHandLandmarks) {
     const predictions = detections.multiHandLandmarks;
     drawHands(predictions);
 
     // Update sword position based on thumb of the first hand
     // if (predictions.length > 0 && isIndexFingerUp(predictions[0])) {
-    if (predictions.length > 0) {
+    if (predictions.length > 0 && isIndexFingerUp(predictions[0])) {
+      leftHand = isLeftHand(predictions[0]);
       const indexFinger = predictions[0][8];
       sword.swipe((1 - indexFinger.x) * width, indexFinger.y * height); // Mirror the x-coordinate
     }
@@ -254,7 +271,7 @@ function game() {
         boom.play();
         gameOver();
       }
-      if (sword.checkSlice(fruit[i]) && fruit[i].name != "boom") {
+      if (sword.checkSlice(fruit[i], leftHand) && fruit[i].name != "boom") {
         // Sliced fruit
         spliced.play();
         points++;

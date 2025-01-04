@@ -30,8 +30,8 @@ Sword.prototype.update = function () {
   }
 };
 
-Sword.prototype.checkSlice = function (fruit) {
-  if (fruit.sliced || this.swipes.length < 2) {
+Sword.prototype.checkSlice = function (fruit, leftHand) {
+  if (fruit.sliced || this.swipes.length < 2 || leftHand == null) {
     return false;
   }
   var length = this.swipes.length;
