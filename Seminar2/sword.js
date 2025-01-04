@@ -2,6 +2,8 @@
 function Sword(color) {
   this.swipes = [];
   this.color = color;
+  this.leftHandFruits = ["sql", "html", "c"];
+  this.rightHandFruits = ["java", "python"];
 }
 
 Sword.prototype.draw = function () {
@@ -34,6 +36,12 @@ Sword.prototype.checkSlice = function (fruit, leftHand) {
   if (fruit.sliced || this.swipes.length < 2 || leftHand == null) {
     return false;
   }
+
+  if ((this.rightHandFruits.includes(fruit.name) && !leftHand) ||
+    (this.leftHandFruits.includes(fruit.name) && leftHand)) {
+    return false;
+  }
+
   var length = this.swipes.length;
   var stroke1 = this.swipes[length - 1]; // latest stroke
   var stroke2 = this.swipes[length - 2]; // second last stroke
