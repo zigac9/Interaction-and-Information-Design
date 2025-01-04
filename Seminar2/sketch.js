@@ -24,6 +24,7 @@ var boom, spliced, missed, over, start;
 let handposeModel;
 let video;
 let openHandFrames = 0;
+let handCache = null;
 const requiredOpenFrames = 10;
 const opennessThreshold = 0.02;
 
@@ -77,13 +78,20 @@ function draw() {
   clear();
   background(bg);
 
+  // Mirror the video feed
+  push();
+  translate(width, 0);    // Move the origin to the right edge of the canvas
+  scale(-1, 1);           // Flip the canvas horizontally
+  // image(video, 0, 0, width, height); // Draw the mirrored video
+  pop();
+
   image(this.foregroundImg, 0, 0, 1880, 250);
   image(this.fruitLogo, 600, 30, 300, 144);
   image(this.ninjaLogo, 950, 0, 318, 165);
   image(this.newGameImg, 650, 650, 600, 200);
   // image(this.fruitImg, 365, 415, 90, 90);
 
-  if (detections && detections.multiHandLandmarks) {
+  if (!isPlay && detections && detections.multiHandLandmarks) {
     const predictions = detections.multiHandLandmarks;
     // console.log(predictions.length);
     drawHands(predictions);
@@ -154,6 +162,8 @@ function areBothHandsOpen(predictions) {
 
 
 function drawHands(predictions) {
+  handCache = predictions; // Cache predictions
+
   // Define hand connections
   const connections = [
     [0, 1], [1, 2], [2, 3], [3, 4], // Thumb
@@ -164,7 +174,7 @@ function drawHands(predictions) {
   ];
 
   // Iterate through each hand's predictions
-  predictions.forEach((landmarks) => {
+  handCache.forEach((landmarks) => {
     drawConnections(landmarks, connections);
     drawLandmarks(landmarks);
   });
@@ -181,9 +191,9 @@ function drawConnections(landmarks, connections) {
 
     if (startLandmark && endLandmark) {
       line(
-        startLandmark.x * width,
+        (1 - startLandmark.x) * width, // Mirror the x-coordinate
         startLandmark.y * height,
-        endLandmark.x * width,
+        (1 - endLandmark.x) * width, // Mirror the x-coordinate
         endLandmark.y * height
       );
     }
@@ -196,7 +206,7 @@ function drawLandmarks(landmarks) {
   noStroke();
 
   landmarks.forEach(({ x, y }) => {
-    ellipse(x * width, y * height, 12, 12); // Smaller, consistent size
+    ellipse((1 - x) * width, y * height, 12, 12); // Mirror the x-coordinate
   });
 }
 
@@ -212,7 +222,7 @@ function game() {
     // if (predictions.length > 0 && isIndexFingerUp(predictions[0])) {
     if (predictions.length > 0) {
       const indexFinger = predictions[0][8];
-      sword.swipe(indexFinger.x * width, indexFinger.y * height);
+      sword.swipe((1 - indexFinger.x) * width, indexFinger.y * height); // Mirror the x-coordinate
     }
   }
   if (frameCount % 5 === 0) {
