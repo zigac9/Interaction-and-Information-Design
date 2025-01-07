@@ -8,11 +8,16 @@ function Sword(color) {
 
 Sword.prototype.draw = function () {
   var l = this.swipes.length;
-  for (var i = 0; i < this.swipes.length; i++) {
+  for (var i = 0; i < l - 1; i++) {
     var size = map(i, 0, this.swipes.length, 2, 27);
-    noStroke();
-    fill(this.color);
-    ellipse(this.swipes[i].x, this.swipes[i].y, size);
+    stroke(this.color);
+    strokeWeight(size);
+    line(
+      this.swipes[i].x,
+      this.swipes[i].y,
+      this.swipes[i + 1].x,
+      this.swipes[i + 1].y
+    );
   }
   if (l < 1) {
     return;
@@ -22,7 +27,7 @@ Sword.prototype.draw = function () {
 };
 
 Sword.prototype.update = function () {
-  if (this.swipes.length > 30) {
+  if (this.swipes.length > 10) {
     this.swipes.splice(0, 1);
   }
   if (this.swipes.length > 0) {
