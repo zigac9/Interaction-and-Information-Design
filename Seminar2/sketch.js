@@ -59,6 +59,8 @@ function preload() {
   newGameImg = loadImage("images/start-game.png");
   fruitImg = loadImage("images/fruitMode.png");
   gameOverImg = loadImage("images/game-over.png");
+  leftHandFruits = loadImage("images/leftHand.png");
+  rightHandFruits = loadImage("images/rightHand.png");
 }
 
 async function setup() {
@@ -307,6 +309,8 @@ function game() {
   }
   sword.draw();
   score += points;
+  image(this.leftHandFruits, 5, 80, 140, 260);
+  image(this.rightHandFruits, width - 150, 90, 150, 260);
   drawScore();
   drawLives();
 }

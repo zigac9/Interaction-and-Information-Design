@@ -37,8 +37,8 @@ Sword.prototype.checkSlice = function (fruit, leftHand) {
   }
 
   if (
-    (this.rightHandFruits.includes(fruit.name) && !leftHand) ||
-    (this.leftHandFruits.includes(fruit.name) && leftHand)
+    (this.rightHandFruits.includes(fruit.name) && leftHand) ||
+    (this.leftHandFruits.includes(fruit.name) && !leftHand)
   ) {
     return false;
   }
