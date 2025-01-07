@@ -8,14 +8,7 @@ var isPlay = false;
 var gravity = 0.1;
 var sword;
 var fruit = [];
-var fruitsList = [
-  "java",
-  "python",
-  "sql",
-  "html",
-  "c",
-  "boom",
-];
+var fruitsList = ["java", "python", "sql", "html", "c", "boom"];
 var fruitsImgs = [],
   slicedFruitsImgs = [];
 var livesImgs = [],
@@ -27,6 +20,12 @@ let openHandFrames = 0;
 let handCache = null;
 const requiredOpenFrames = 10;
 const opennessThreshold = 0.02;
+
+let width_image = 1880;
+let height_image = 880;
+let aspectRatio = width_image / height_image;
+
+// katera leva, katera desna, restart z rokami
 
 function preload() {
   // LOAD SOUNDS
@@ -63,15 +62,27 @@ function preload() {
 }
 
 async function setup() {
-  cnv = createCanvas(1880, 880); // Updated canvas size
+  let initialWidth = windowWidth;
+  let initialHeight = windowWidth / aspectRatio;
+
+  if (initialHeight > windowHeight) {
+    initialHeight = windowHeight;
+    initialWidth = windowHeight * aspectRatio;
+  }
+
+  cnv = createCanvas(initialWidth, initialHeight);
   sword = new Sword(color("#FFFFFF"));
   frameRate(60);
   score = 0;
-  lives = 3;
+  lives = 5;
 
   video = createCapture(VIDEO);
-  video.size(1880, 880); // Updated video size
+  video.size(initialWidth, initialHeight); // Updated video size
   video.hide();
+
+  width_image = initialWidth;
+  height_image = initialHeight;
+  // setupDetection(initialWidth, initialHeight);
 }
 
 function draw() {
@@ -80,12 +91,12 @@ function draw() {
 
   // Mirror the video feed
   push();
-  translate(width, 0);    // Move the origin to the right edge of the canvas
-  scale(-1, 1);           // Flip the canvas horizontally
+  translate(width, 0); // Move the origin to the right edge of the canvas
+  scale(-1, 1); // Flip the canvas horizontally
   // image(video, 0, 0, width, height); // Draw the mirrored video
   pop();
 
-  image(this.foregroundImg, 0, 0, 1880, 250);
+  image(this.foregroundImg, 0, 0, width_image, 250);
   image(this.fruitLogo, 600, 30, 300, 144);
   image(this.ninjaLogo, 950, 0, 318, 165);
   image(this.newGameImg, 650, 650, 600, 200);
@@ -122,7 +133,6 @@ function distance(p1, p2) {
 }
 
 function areBothHandsOpen(predictions) {
-
   // Helper function to check if a single hand is open
   const isHandOpen = (hand) => {
     const thumbIsOpen = distance(hand[4], hand[3]) > opennessThreshold;
@@ -138,7 +148,7 @@ function areBothHandsOpen(predictions) {
       middleIsOpen,
       ringIsOpen,
       pinkyIsOpen,
-    ].filter(isOpen => isOpen).length;
+    ].filter((isOpen) => isOpen).length;
 
     // Adjust this threshold if needed
     return fingersOpen >= 4;
@@ -148,10 +158,9 @@ function areBothHandsOpen(predictions) {
   return predictions.every(isHandOpen);
 }
 
-
 function isIndexFingerUp(hand) {
   // Check if the index finger is extended
-  const indexIsOpen = distance(hand[8], hand[7]) > opennessThreshold;
+  const indexIsOpen = distance(hand[8], hand[6]) > opennessThreshold;
 
   // Check if other fingers are closed
   // const thumbIsClosed = distance(hand[4], hand[3]) < opennessThreshold;
@@ -162,17 +171,31 @@ function isIndexFingerUp(hand) {
   return indexIsOpen;
 }
 
-
 function drawHands(predictions) {
   handCache = predictions; // Cache predictions
 
   // Define hand connections
   const connections = [
-    [0, 1], [1, 2], [2, 3], [3, 4], // Thumb
-    [0, 5], [5, 6], [6, 7], [7, 8], // Index finger
-    [0, 9], [9, 10], [10, 11], [11, 12], // Middle finger
-    [0, 13], [13, 14], [14, 15], [15, 16], // Ring finger
-    [0, 17], [17, 18], [18, 19], [19, 20], // Pinky
+    [0, 1],
+    [1, 2],
+    [2, 3],
+    [3, 4], // Thumb
+    [0, 5],
+    [5, 6],
+    [6, 7],
+    [7, 8], // Index finger
+    [0, 9],
+    [9, 10],
+    [10, 11],
+    [11, 12], // Middle finger
+    [0, 13],
+    [13, 14],
+    [14, 15],
+    [15, 16], // Ring finger
+    [0, 17],
+    [17, 18],
+    [18, 19],
+    [19, 20], // Pinky
   ];
 
   // Iterate through each hand's predictions
@@ -225,7 +248,6 @@ function isLeftHand(hand) {
   return thumbTip.x < pinkyTip.x;
 }
 
-
 function game() {
   clear();
   background(bg);
@@ -243,7 +265,7 @@ function game() {
     }
   }
   if (frameCount % 5 === 0) {
-    if (noise(frameCount) > 0.69) {
+    if (noise(frameCount) > 0.69 && fruit.length < 4) {
       fruit.push(randomFruit()); // Display new fruit
     }
   }
@@ -269,12 +291,14 @@ function game() {
       if (fruit[i].sliced && fruit[i].name == "boom") {
         // Check for bomb
         boom.play();
-        gameOver();
+        lives--;
+        x++;
+        // fruit.splice(i, 1); boom-1 boom-2 add
       }
       if (sword.checkSlice(fruit[i], leftHand) && fruit[i].name != "boom") {
         // Sliced fruit
         spliced.play();
-        points++;
+        points = points + sword.score;
         fruit[i].update();
         fruit[i].draw();
       }
@@ -292,50 +316,82 @@ function game() {
 function drawLives() {
   image(
     this.livesImgs[0],
-    width - 110,
+    width - 200,
     20,
-    livesImgs[0].width,
-    livesImgs[0].height
+    livesImgs[0].width + 5,
+    livesImgs[0].height + 5
   );
   image(
     this.livesImgs[1],
-    width - 88,
+    width - 170,
     20,
-    livesImgs[1].width,
-    livesImgs[1].height
+    livesImgs[1].width + 5,
+    livesImgs[1].height + 5
+  );
+  image(
+    this.livesImgs[1],
+    width - 135,
+    25,
+    livesImgs[1].width + 5,
+    livesImgs[1].height + 5
   );
   image(
     this.livesImgs[2],
-    width - 60,
-    20,
-    livesImgs[2].width,
-    livesImgs[2].height
+    width - 95,
+    30,
+    livesImgs[2].width + 5,
+    livesImgs[2].height + 5
   );
-  if (lives <= 2) {
+  image(
+    this.livesImgs[2],
+    width - 55,
+    40,
+    livesImgs[2].width + 5,
+    livesImgs[2].height + 5
+  );
+  if (lives <= 4) {
     image(
       this.livesImgs2[0],
-      width - 110,
+      width - 200,
       20,
-      livesImgs2[0].width,
-      livesImgs2[0].height
+      livesImgs2[0].width + 5,
+      livesImgs2[0].height + 5
+    );
+  }
+  if (lives <= 3) {
+    image(
+      this.livesImgs2[1],
+      width - 170,
+      20,
+      livesImgs2[1].width + 5,
+      livesImgs2[1].height + 5
+    );
+  }
+  if (lives <= 2) {
+    image(
+      this.livesImgs2[1],
+      width - 135,
+      25,
+      livesImgs2[1].width + 5,
+      livesImgs2[1].height + 5
     );
   }
   if (lives <= 1) {
     image(
-      this.livesImgs2[1],
-      width - 88,
-      20,
-      livesImgs2[1].width,
-      livesImgs2[1].height
+      this.livesImgs2[2],
+      width - 95,
+      30,
+      livesImgs2[2].width + 5,
+      livesImgs2[2].height + 5
     );
   }
   if (lives === 0) {
     image(
       this.livesImgs2[2],
-      width - 60,
-      20,
-      livesImgs2[2].width,
-      livesImgs2[2].height
+      width - 55,
+      40,
+      livesImgs2[2].width + 5,
+      livesImgs2[2].height + 5
     );
   }
 }
@@ -359,14 +415,14 @@ function gameOver() {
 }
 
 function keyPressed() {
-  if (lives == 0 && (key === 'r' || key === 'R')) {
+  if (lives == 0 && (key === "r" || key === "R")) {
     restartGame();
   }
 }
 
 function restartGame() {
   score = 0;
-  lives = 3;
+  lives = 5;
   isPlay = false;
   fruit = [];
   openHandFrames = 0;

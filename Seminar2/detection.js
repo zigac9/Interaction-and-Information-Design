@@ -1,8 +1,6 @@
 let detections = {};
 
 const videoElement = document.getElementById("video");
-videoElement.width = 1880; // Set the width of the video element
-videoElement.height = 880; // Set the height of the video element
 videoElement.style.display = "none"; // Hide the video element
 
 function gotHands(results) {
@@ -27,7 +25,5 @@ const camera = new Camera(videoElement, {
   onFrame: async () => {
     await hands.send({ image: videoElement });
   },
-  width: 1880, // Adjust the width here
-  height: 880, // Adjust the height here
 });
 camera.start();
