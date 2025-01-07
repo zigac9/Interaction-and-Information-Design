@@ -2,7 +2,7 @@ function Sword(color) {
   this.swipes = [];
   this.color = color;
   this.leftHandFruits = ["sql", "html", "c"];
-  this.rightHandFruits = ["java", "python"];
+  this.rightHandFruits = ["java", "python", "js"];
   this.score = 0; // Add a score tracker
 }
 

@@ -8,7 +8,7 @@ var isPlay = false;
 var gravity = 0.1;
 var sword;
 var fruit = [];
-var fruitsList = ["java", "python", "sql", "html", "c", "boom"];
+var fruitsList = ["java", "python", "sql", "html", "c", "js", "boom"];
 var fruitsImgs = [],
   slicedFruitsImgs = [];
 var livesImgs = [],
