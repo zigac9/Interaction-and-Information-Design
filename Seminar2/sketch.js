@@ -20,6 +20,7 @@ let openHandFrames = 0;
 let closedHandFrames = 0;
 let handCache = null;
 let isGameOver = false;
+let instructions = true;
 const requiredOpenFrames = 10;
 const requiredCloseFrames = 10;
 const opennessThreshold = 0.02;
@@ -64,6 +65,7 @@ function preload() {
   gameOverImg = loadImage("images/game-over.png");
   leftHandFruits = loadImage("images/leftHand.png");
   rightHandFruits = loadImage("images/rightHand.png");
+  gameOverText = loadImage("images/gameOverText.png");
 }
 
 async function setup() {
@@ -104,8 +106,9 @@ function draw() {
   image(this.foregroundImg, 0, 0, width_image, 250);
   image(this.fruitLogo, 600, 30, 300, 144);
   image(this.ninjaLogo, 950, 0, 318, 165);
-  image(this.newGameImg, 650, 650, 600, 200);
-  // image(this.fruitImg, 365, 415, 90, 90);
+  if (instructions) {
+    image(this.newGameImg, 650, 650, 600, 200);
+  }
 
   if (!isPlay && detections && detections.multiHandLandmarks) {
     const predictions = detections.multiHandLandmarks;
@@ -335,8 +338,10 @@ function game() {
   }
   sword.draw();
   score += points;
-  image(this.leftHandFruits, 5, 80, 140, 260);
-  image(this.rightHandFruits, width - 150, 90, 150, 260);
+  if (instructions) {
+    image(this.leftHandFruits, 5, 80, 140, 260);
+    image(this.rightHandFruits, width - 150, 90, 150, 260);
+  }
   drawScore();
   drawLives();
 }
@@ -428,9 +433,9 @@ function drawScore() {
   image(this.scoreImg, 10, 10, 40, 40);
   textAlign(LEFT);
   noStroke();
-  fill(255, 147, 21);
+  fill(255);
   textSize(50);
-  text(score, 50, 50);
+  text("score: " + score, 50, 50);
 }
 
 function gameOver() {
@@ -443,6 +448,9 @@ function gameOver() {
   clear();
   background(bg);
   image(this.gameOverImg, 650, 400, 600, 110);
+  if (instructions) {
+    image(this.gameOverText, 650, 650, 600, 200);
+  }
   if (detections && detections.multiHandLandmarks) {
     const predictions = detections.multiHandLandmarks;
     drawHands(predictions);
@@ -464,6 +472,8 @@ function gameOver() {
 function keyPressed() {
   if (lives == 0 && (key === "r" || key === "R")) {
     restartGame();
+  } else if (key === "i" || key === "I") {
+    instructions = !instructions;
   }
 }
 
