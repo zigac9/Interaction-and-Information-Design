@@ -291,9 +291,7 @@ function game() {
       if (fruit[i].sliced && fruit[i].name == "boom") {
         // Check for bomb
         boom.play();
-        lives--;
-        x++;
-        // fruit.splice(i, 1); boom-1 boom-2 add
+        gameOver();
       }
       if (sword.checkSlice(fruit[i], leftHand) && fruit[i].name != "boom") {
         // Sliced fruit
