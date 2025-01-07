@@ -37,8 +37,8 @@ Sword.prototype.checkSlice = function (fruit, leftHand) {
   }
 
   if (
-    (this.rightHandFruits.includes(fruit.name) && leftHand) ||
-    (this.leftHandFruits.includes(fruit.name) && !leftHand)
+    (this.rightHandFruits.includes(fruit.name) && !leftHand) ||
+    (this.leftHandFruits.includes(fruit.name) && leftHand)
   ) {
     return false;
   }
@@ -61,11 +61,11 @@ Sword.prototype.checkSlice = function (fruit, leftHand) {
   var sliced = d1 < fruit.size || (d1 < d3 && d2 < d3 && d3 < width / 4);
 
   if (sliced) {
-    if (speed < 1) {
+    if (speed < 1.2) {
       sliced = false; // Too slow, don't slice
-    } else if (speed < 3) {
+    } else if (speed < 2) {
       this.score += 1; // Ideal speed, high points
-    } else if (speed < 5) {
+    } else if (speed < 4) {
       this.score += 5; // Moderate speed, moderate points
     } else {
       this.score += 10; // Too fast, minimal points

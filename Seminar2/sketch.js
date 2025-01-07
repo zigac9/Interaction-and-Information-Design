@@ -110,8 +110,6 @@ function draw() {
   if (!isPlay && detections && detections.multiHandLandmarks) {
     const predictions = detections.multiHandLandmarks;
 
-    // console.log(predictions)
-    // console.log(predictions.length);
     drawHands(predictions);
 
     // Check if both hands are open
@@ -137,18 +135,14 @@ function draw() {
   }
 }
 
-function distance(p1, p2) {
-  return Math.sqrt(Math.pow(p1.x - p2.x, 2) + Math.pow(p1.y - p2.y, 2));
-}
-
 function areBothHandsOpen(predictions) {
   // Helper function to check if a single hand is open
   const isHandOpen = (hand) => {
-    const thumbIsOpen = distance(hand[4], hand[3]) > opennessThreshold;
-    const indexIsOpen = distance(hand[8], hand[7]) > opennessThreshold;
-    const middleIsOpen = distance(hand[12], hand[11]) > opennessThreshold;
-    const ringIsOpen = distance(hand[16], hand[15]) > opennessThreshold;
-    const pinkyIsOpen = distance(hand[20], hand[19]) > opennessThreshold;
+    const thumbIsOpen = Math.abs(hand[4].y - hand[3].y) > opennessThreshold;
+    const indexIsOpen = Math.abs(hand[8].y - hand[7].y) > opennessThreshold;
+    const middleIsOpen = Math.abs(hand[12].y - hand[11].y) > opennessThreshold;
+    const ringIsOpen = Math.abs(hand[16].y - hand[15].y) > opennessThreshold;
+    const pinkyIsOpen = Math.abs(hand[20].y - hand[19].y) > opennessThreshold;
 
     // Require majority of fingers to be open
     const fingersOpen = [
@@ -169,14 +163,7 @@ function areBothHandsOpen(predictions) {
 
 function isIndexFingerUp(hand) {
   // Check if the index finger is extended
-  const indexIsOpen = distance(hand[8], hand[6]) > opennessThreshold;
-
-  // Check if other fingers are closed
-  // const thumbIsClosed = distance(hand[4], hand[3]) < opennessThreshold;
-  // const middleIsClosed = distance(hand[12], hand[10]) < opennessThreshold;
-  // const ringIsClosed = distance(hand[16], hand[14]) < opennessThreshold;
-  // const pinkyIsClosed = distance(hand[20], hand[18]) < opennessThreshold;
-
+  const indexIsOpen = Math.abs(hand[8].y - hand[7].y) > opennessThreshold;
   return indexIsOpen;
 }
 
@@ -245,16 +232,10 @@ function drawLandmarks(landmarks) {
 }
 
 function isLeftHand(hand) {
-  if (!hand || hand.length < 21) {
-    throw new Error("Invalid hand landmarks provided.");
+  if (hand.label === "Left") {
+    return true;
   }
-
-  // The thumb tip is at index 4 and the pinky tip is at index 20 in MediaPipe's hand landmarks.
-  const thumbTip = hand[4];
-  const pinkyTip = hand[20];
-
-  // If the x-coordinate of the thumb tip is less than the x-coordinate of the pinky tip, it's a left hand.
-  return thumbTip.x < pinkyTip.x;
+  return false;
 }
 
 function game() {
@@ -268,7 +249,7 @@ function game() {
     // Update sword position based on thumb of the first hand
     // if (predictions.length > 0 && isIndexFingerUp(predictions[0])) {
     if (predictions.length > 0 && isIndexFingerUp(predictions[0])) {
-      leftHand = isLeftHand(predictions[0]);
+      leftHand = isLeftHand(detections.multiHandedness[0]);
       const indexFinger = predictions[0][8];
       sword.swipe((1 - indexFinger.x) * width, indexFinger.y * height); // Mirror the x-coordinate
     }
@@ -305,6 +286,9 @@ function game() {
       if (sword.checkSlice(fruit[i], leftHand) && fruit[i].name != "boom") {
         // Sliced fruit
         spliced.play();
+        textSize(80);
+        fill(255);
+        text("+" + sword.score, fruit[i].x, fruit[i].y - 50);
         points = points + sword.score;
         fruit[i].update();
         fruit[i].draw();
