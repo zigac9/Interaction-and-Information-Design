@@ -25,7 +25,7 @@ const requiredCloseFrames = 10;
 const opennessThreshold = 0.02;
 
 let width_image = 1880;
-let height_image = 880;
+let height_image = 893;
 let aspectRatio = width_image / height_image;
 
 // katera leva, katera desna, restart z rokami
@@ -163,8 +163,43 @@ function areBothHandsOpen(predictions) {
 
 function isIndexFingerUp(hand) {
   // Check if the index finger is extended
+  const thumbIsClosed = Math.abs(hand[4].y - hand[3].y) < opennessThreshold;
   const indexIsOpen = Math.abs(hand[8].y - hand[7].y) > opennessThreshold;
-  return indexIsOpen;
+  const middleIsClosed = Math.abs(hand[12].y - hand[11].y) < opennessThreshold;
+  const ringIsClosed = Math.abs(hand[16].y - hand[15].y) < opennessThreshold;
+  const pinkyIsClosed = Math.abs(hand[20].y - hand[19].y) < opennessThreshold;
+
+  const fingersClosed = [
+    thumbIsClosed,
+    middleIsClosed,
+    ringIsClosed,
+    pinkyIsClosed,
+  ].filter((isClosed) => isClosed).length;
+
+  return indexIsOpen && fingersClosed >= 2;
+}
+
+function isThumbsUp(predictions) {
+  const isThumbUp = (hand) => {
+    // Check if the thumb is extended
+    const thumbIsOpen = Math.abs(hand[4].y - hand[3].y) > opennessThreshold;
+    const indexIsClosed = Math.abs(hand[8].y - hand[7].y) < opennessThreshold;
+    const middleIsClosed =
+      Math.abs(hand[12].y - hand[11].y) < opennessThreshold;
+    const ringIsClosed = Math.abs(hand[16].y - hand[15].y) < opennessThreshold;
+    const pinkyIsClosed = Math.abs(hand[20].y - hand[19].y) < opennessThreshold;
+
+    const fingersClosed = [
+      indexIsClosed,
+      middleIsClosed,
+      ringIsClosed,
+      pinkyIsClosed,
+    ].filter((isClosed) => isClosed).length;
+
+    return thumbIsOpen && fingersClosed >= 2;
+  };
+
+  return predictions.every(isThumbUp);
 }
 
 function drawHands(predictions) {
@@ -413,7 +448,7 @@ function gameOver() {
     drawHands(predictions);
 
     // Check if both hands are open
-    if (predictions.length === 2 && areBothHandsOpen(predictions)) {
+    if (predictions.length === 2 && isThumbsUp(predictions)) {
       closedHandFrames++; // Increment counter if hands are open
     } else {
       closedHandFrames = 0; // Reset counter if hands are not open
