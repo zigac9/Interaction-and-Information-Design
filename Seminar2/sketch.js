@@ -17,8 +17,11 @@ var boom, spliced, missed, over, start;
 let handposeModel;
 let video;
 let openHandFrames = 0;
+let closedHandFrames = 0;
 let handCache = null;
+let isGameOver = false;
 const requiredOpenFrames = 10;
+const requiredCloseFrames = 10;
 const opennessThreshold = 0.02;
 
 let width_image = 1880;
@@ -125,7 +128,11 @@ function draw() {
     }
   }
 
-  if (isPlay) {
+  if (lives == 0) {
+    gameOver();
+  }
+
+  if (isPlay && lives > 0) {
     game();
   }
 }
@@ -408,12 +415,31 @@ function drawScore() {
 }
 
 function gameOver() {
-  noLoop();
-  over.play();
+  // noLoop();
+  if (!isGameOver) {
+    lives = 0;
+    over.play();
+  }
+  isGameOver = true;
   clear();
   background(bg);
   image(this.gameOverImg, 650, 400, 600, 110);
-  lives = 0;
+  if (detections && detections.multiHandLandmarks) {
+    const predictions = detections.multiHandLandmarks;
+    drawHands(predictions);
+
+    // Check if both hands are open
+    if (predictions.length === 2 && areBothHandsOpen(predictions)) {
+      closedHandFrames++; // Increment counter if hands are open
+    } else {
+      closedHandFrames = 0; // Reset counter if hands are not open
+    }
+
+    // Trigger game if hands are open for required frames
+    if (closedHandFrames >= requiredCloseFrames) {
+      restartGame();
+    }
+  }
 }
 
 function keyPressed() {
@@ -428,6 +454,7 @@ function restartGame() {
   isPlay = false;
   fruit = [];
   openHandFrames = 0;
+  closedHandFrames = 0;
   isGameOver = false; // Reset game over state
   loop(); // Restart the game loop
 }
