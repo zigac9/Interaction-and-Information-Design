@@ -141,11 +141,11 @@ function draw() {
 function areBothHandsOpen(predictions) {
   // Helper function to check if a single hand is open
   const isHandOpen = (hand) => {
-    const thumbIsOpen = Math.abs(hand[4].y - hand[3].y) > opennessThreshold;
-    const indexIsOpen = Math.abs(hand[8].y - hand[7].y) > opennessThreshold;
-    const middleIsOpen = Math.abs(hand[12].y - hand[11].y) > opennessThreshold;
-    const ringIsOpen = Math.abs(hand[16].y - hand[15].y) > opennessThreshold;
-    const pinkyIsOpen = Math.abs(hand[20].y - hand[19].y) > opennessThreshold;
+    const thumbIsOpen = hand[4].y < hand[2].y;
+    const indexIsOpen = hand[8].y < hand[6].y;
+    const middleIsOpen = hand[12].y < hand[10].y;
+    const ringIsOpen = hand[16].y < hand[14].y;
+    const pinkyIsOpen = hand[20].y < hand[18].y;
 
     // Require majority of fingers to be open
     const fingersOpen = [
@@ -185,12 +185,11 @@ function isIndexFingerUp(hand) {
 function isThumbsUp(predictions) {
   const isThumbUp = (hand) => {
     // Check if the thumb is extended
-    const thumbIsOpen = Math.abs(hand[4].y - hand[3].y) > opennessThreshold;
-    const indexIsClosed = Math.abs(hand[8].y - hand[7].y) < opennessThreshold;
-    const middleIsClosed =
-      Math.abs(hand[12].y - hand[11].y) < opennessThreshold;
-    const ringIsClosed = Math.abs(hand[16].y - hand[15].y) < opennessThreshold;
-    const pinkyIsClosed = Math.abs(hand[20].y - hand[19].y) < opennessThreshold;
+    const thumbIsOpen = hand[4].y < hand[2].y;
+    const indexIsClosed = hand[8].y > hand[6].y;
+    const middleIsClosed = hand[12].y > hand[10].y;
+    const ringIsClosed = hand[16].y > hand[14].y;
+    const pinkyIsClosed = hand[20].y > hand[18].y;
 
     const fingersClosed = [
       indexIsClosed,
