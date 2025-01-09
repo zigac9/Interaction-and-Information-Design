@@ -2,6 +2,17 @@
 
 My interactive data visualization is available at [https://shootingchart-seminar1.netlify.app/](https://shootingchart-seminar1.netlify.app/). It is about Luka Doncic's throws, which can be sorted in different ways, and by clicking on a throw you can see the details of that throw. This allows us to compare the efficiency of the throws, and the number of throws from each position in different situations, which the user can choose.
 
+#### How to run the project locally:
+
+1. Right click on the index.html file in the VSCODE tab on the left Explorer panel.
+2. If you don't have the Live Server extension installed, you can install it from the Extensions view.
+3. Select Open Live Server.
+4. A window will open in your default browser with the output of your project.
+
+### Question: How efficient is Luka Dončić in different areas of the court based on the opponent, year, specific date, and quarter?
+
+Answer: Through an interactive visualization, users can explore and filter Luka Dončić's shooting data to compare his shooting efficiency and points scored in different situations. By using filters such as year, date, quarter, and opponent, one can analyze how his efficiency changes based on shooting percentages and points scored depending on these factors. This allows for an analysis of how many points he scores solely from field goals, providing a deeper insight into his scoring methods and efficiency in different areas of the court.
+
 ## Features
 
 - **Interactive Visualization**: The application provides an interactive shooting chart where users can visualize Luka Doncic's shot data.
@@ -37,4 +48,3 @@ My interactive data visualization is available at [https://shootingchart-seminar
 - **nba_api**: For fetching the shot data from the NBA API.
 - **Pandas**: For processing the shot data.
 - **Netlify**: For deploying the application.
-  
