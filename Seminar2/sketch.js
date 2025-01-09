@@ -104,10 +104,10 @@ function draw() {
   pop();
 
   image(this.foregroundImg, 0, 0, width_image, 250);
-  image(this.fruitLogo, 600, 30, 300, 144);
-  image(this.ninjaLogo, 950, 0, 318, 165);
+  image(this.fruitLogo, (width - 700) / 2, 30, 300, 144);
+  image(this.ninjaLogo, width / 2, 0, 318, 165);
   if (instructions) {
-    image(this.newGameImg, 650, 650, 600, 200);
+    image(this.newGameImg, (width - 600) / 2, height - 250, 600, 200);
   }
 
   if (!isPlay && detections && detections.multiHandLandmarks) {
@@ -167,7 +167,7 @@ function areBothHandsOpen(predictions) {
 function isIndexFingerUp(hand) {
   // Check if the index finger is extended
   const thumbIsClosed = Math.abs(hand[4].y - hand[3].y) < opennessThreshold;
-  const indexIsOpen = Math.abs(hand[8].y - hand[7].y) > opennessThreshold;
+  // const indexIsOpen = Math.abs(hand[8].y - hand[7].y) > opennessThreshold;
   const middleIsClosed = Math.abs(hand[12].y - hand[11].y) < opennessThreshold;
   const ringIsClosed = Math.abs(hand[16].y - hand[15].y) < opennessThreshold;
   const pinkyIsClosed = Math.abs(hand[20].y - hand[19].y) < opennessThreshold;
@@ -179,7 +179,7 @@ function isIndexFingerUp(hand) {
     pinkyIsClosed,
   ].filter((isClosed) => isClosed).length;
 
-  return indexIsOpen && fingersClosed >= 2;
+  return fingersClosed >= 2;
 }
 
 function isThumbsUp(predictions) {
@@ -447,9 +447,9 @@ function gameOver() {
   isGameOver = true;
   clear();
   background(bg);
-  image(this.gameOverImg, 650, 400, 600, 110);
+  image(this.gameOverImg, (width - 600) / 2, (height - 250) / 2, 600, 110);
   if (instructions) {
-    image(this.gameOverText, 650, 650, 600, 200);
+    image(this.gameOverText, (width - 600) / 2, height - 300, 600, 200);
   }
   if (detections && detections.multiHandLandmarks) {
     const predictions = detections.multiHandLandmarks;
