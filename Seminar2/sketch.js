@@ -185,11 +185,12 @@ function isIndexFingerUp(hand) {
 function isThumbsUp(predictions) {
   const isThumbUp = (hand) => {
     // Check if the thumb is extended
-    const thumbIsOpen = hand[4].y < hand[2].y;
-    const indexIsClosed = hand[8].y > hand[6].y;
-    const middleIsClosed = hand[12].y > hand[10].y;
-    const ringIsClosed = hand[16].y > hand[14].y;
-    const pinkyIsClosed = hand[20].y > hand[18].y;
+    const thumbIsOpen = Math.abs(hand[4].y - hand[3].y) > opennessThreshold;
+    const indexIsClosed = Math.abs(hand[8].y - hand[7].y) < opennessThreshold;
+    const middleIsClosed =
+      Math.abs(hand[12].y - hand[11].y) < opennessThreshold;
+    const ringIsClosed = Math.abs(hand[16].y - hand[15].y) < opennessThreshold;
+    const pinkyIsClosed = Math.abs(hand[20].y - hand[19].y) < opennessThreshold;
 
     const fingersClosed = [
       indexIsClosed,
