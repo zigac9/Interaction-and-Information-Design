@@ -37,7 +37,7 @@ function preload() {
   over = loadSound("sounds/over.mp3");
 
   // LOAD IMAGES
-  for (var i = 0; i < fruitsList.length - 1; i++) {
+  for (var i = 0; i < fruitsList.length; i++) {
     slicedFruitsImgs[2 * i] = loadImage("images/" + fruitsList[i] + "-1.png");
     slicedFruitsImgs[2 * i + 1] = loadImage(
       "images/" + fruitsList[i] + "-2.png"
@@ -294,16 +294,23 @@ function game() {
       }
       fruit.splice(i, 1);
     } else {
-      if (fruit[i].sliced && fruit[i].name == "boom") {
-        boom.play();
-        gameOver();
-      }
-      if (sword.checkSlice(fruit[i], leftHand) && fruit[i].name != "boom") {
-        spliced.play();
-        textSize(80);
-        fill(255);
-        text("+" + sword.score, fruit[i].x, fruit[i].y - 50);
-        points = points + sword.score;
+      if (sword.checkSlice(fruit[i], leftHand)) {
+        if (fruit[i].name == "boom") {
+          boom.play();
+          textSize(80);
+          fill(255);
+          text("-1 LIFE", fruit[i].x, fruit[i].y - 50);
+          lives--;
+          if (lives < 1) {
+            gameOver();
+          }
+        } else {
+          spliced.play();
+          textSize(80);
+          fill(255);
+          text("+" + sword.score, fruit[i].x, fruit[i].y - 50);
+          points = points + sword.score;
+        }
         fruit[i].update();
         fruit[i].draw();
       }

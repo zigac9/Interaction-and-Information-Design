@@ -30,8 +30,8 @@ The game is developed using assets from the Faculty of Computer and Information 
 5. **Cutting Languages**:
 
    - You need to cut the programming languages quickly for more points. The faster you cut, the more points you earn.
-   - If you cut too slowly, the language won’t be cut, and you’ll lose points.
-   - If you make an error while cutting (e.g., cutting the wrong language), you will lose the game.
+   - If you cut too slowly, the language won’t be cut.
+   - If you make an error while cutting, you will lost life.
 
 6. **Game Over**:
    - If you lose all lives or make an error, the game will end.

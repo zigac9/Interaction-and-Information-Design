@@ -26,7 +26,7 @@ function Fruit(
 
 Fruit.prototype.draw = function () {
   fill(this.color);
-  if (this.sliced && this.name != "boom") {
+  if (this.sliced) {
     image(this.slicedFruit1, this.x - 25, this.y, this.size, this.size);
     image(this.slicedFruit2, this.x + 25, this.y, this.size, this.size);
   } else {
@@ -35,7 +35,7 @@ Fruit.prototype.draw = function () {
 };
 
 Fruit.prototype.update = function () {
-  if (this.sliced && this.name != "boom") {
+  if (this.sliced) {
     this.x -= this.xSpeed;
     this.y += this.ySpeed;
     this.ySpeed += gravity * 5;
