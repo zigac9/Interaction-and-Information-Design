@@ -3,7 +3,7 @@ function Sword(color) {
   this.color = color;
   this.leftHandFruits = ["sql", "html", "c"];
   this.rightHandFruits = ["java", "python", "js"];
-  this.score = 0; // Add a score tracker
+  this.score = 0;
 }
 
 Sword.prototype.draw = function () {
@@ -52,14 +52,9 @@ Sword.prototype.checkSlice = function (fruit, leftHand) {
   var stroke1 = this.swipes[length - 1]; // Latest stroke
   var stroke2 = this.swipes[length - 2]; // Second last stroke
   var timeDiff = millis() - this.swipes[length - 2].time; // Time difference
-  var distance = dist(stroke1.x, stroke1.y, stroke2.x, stroke2.y); // Distance between strokes
-  var speed = distance / timeDiff; // Calculate speed
-  // console.log(speed);
-  // console.log(distance);
+  var distance = dist(stroke1.x, stroke1.y, stroke2.x, stroke2.y);
+  var speed = distance / timeDiff;
 
-  // draw speed
-  // console.log(speed);
-  // Distance checks
   var d1 = dist(stroke1.x, stroke1.y, fruit.x, fruit.y);
   var d2 = dist(stroke2.x, stroke2.y, fruit.x, fruit.y);
   var d3 = dist(stroke1.x, stroke1.y, stroke2.x, stroke2.y);
@@ -69,11 +64,11 @@ Sword.prototype.checkSlice = function (fruit, leftHand) {
     if (speed < 1.2) {
       sliced = false; // Too slow, don't slice
     } else if (speed < 2) {
-      this.score += 1; // Ideal speed, high points
+      this.score += 1;
     } else if (speed < 4) {
-      this.score += 5; // Moderate speed, moderate points
+      this.score += 5;
     } else {
-      this.score += 10; // Too fast, minimal points
+      this.score += 10;
     }
   }
 
@@ -82,6 +77,5 @@ Sword.prototype.checkSlice = function (fruit, leftHand) {
 };
 
 Sword.prototype.swipe = function (x, y) {
-  // sword
   this.swipes.push({ x: x, y: y, time: millis() });
 };

@@ -1,4 +1,3 @@
-// GENERAL VARIABLES
 var cnv;
 var score,
   points = 0;
@@ -28,8 +27,6 @@ const opennessThreshold = 0.02;
 let width_image = 1880;
 let height_image = 893;
 let aspectRatio = width_image / height_image;
-
-// katera leva, katera desna, restart z rokami
 
 function preload() {
   // LOAD SOUNDS
@@ -84,23 +81,20 @@ async function setup() {
   lives = 5;
 
   video = createCapture(VIDEO);
-  video.size(initialWidth, initialHeight); // Updated video size
+  video.size(initialWidth, initialHeight);
   video.hide();
 
   width_image = initialWidth;
   height_image = initialHeight;
-  // setupDetection(initialWidth, initialHeight);
 }
 
 function draw() {
   clear();
   background(bg);
 
-  // Mirror the video feed
   push();
-  translate(width, 0); // Move the origin to the right edge of the canvas
-  scale(-1, 1); // Flip the canvas horizontally
-  // image(video, 0, 0, width, height); // Draw the mirrored video
+  translate(width, 0);
+  scale(-1, 1);
   pop();
 
   image(this.foregroundImg, 0, 0, width_image, 250);
@@ -115,14 +109,12 @@ function draw() {
 
     drawHands(predictions);
 
-    // Check if both hands are open
     if (predictions.length === 2 && areBothHandsOpen(predictions)) {
-      openHandFrames++; // Increment counter if hands are open
+      openHandFrames++;
     } else {
-      openHandFrames = 0; // Reset counter if hands are not open
+      openHandFrames = 0;
     }
 
-    // Trigger game if hands are open for required frames
     if (openHandFrames >= requiredOpenFrames) {
       start.play();
       isPlay = true;
@@ -139,7 +131,6 @@ function draw() {
 }
 
 function areBothHandsOpen(predictions) {
-  // Helper function to check if a single hand is open
   const isHandOpen = (hand) => {
     const thumbIsOpen = hand[4].y < hand[2].y;
     const indexIsOpen = hand[8].y < hand[6].y;
@@ -147,7 +138,6 @@ function areBothHandsOpen(predictions) {
     const ringIsOpen = hand[16].y < hand[14].y;
     const pinkyIsOpen = hand[20].y < hand[18].y;
 
-    // Require majority of fingers to be open
     const fingersOpen = [
       thumbIsOpen,
       indexIsOpen,
@@ -156,16 +146,13 @@ function areBothHandsOpen(predictions) {
       pinkyIsOpen,
     ].filter((isOpen) => isOpen).length;
 
-    // Adjust this threshold if needed
     return fingersOpen >= 4;
   };
 
-  // Check if both hands are open
   return predictions.every(isHandOpen);
 }
 
 function isIndexFingerUp(hand) {
-  // Check if the index finger is extended
   const thumbIsClosed = Math.abs(hand[4].y - hand[3].y) < opennessThreshold;
   // const indexIsOpen = Math.abs(hand[8].y - hand[7].y) > opennessThreshold;
   const middleIsClosed = Math.abs(hand[12].y - hand[11].y) < opennessThreshold;
@@ -184,7 +171,6 @@ function isIndexFingerUp(hand) {
 
 function isThumbsUp(predictions) {
   const isThumbUp = (hand) => {
-    // Check if the thumb is extended
     const thumbIsOpen = Math.abs(hand[4].y - hand[3].y) > opennessThreshold;
     const indexIsClosed = Math.abs(hand[8].y - hand[7].y) < opennessThreshold;
     const middleIsClosed =
@@ -206,9 +192,8 @@ function isThumbsUp(predictions) {
 }
 
 function drawHands(predictions) {
-  handCache = predictions; // Cache predictions
+  handCache = predictions;
 
-  // Define hand connections
   const connections = [
     [0, 1],
     [1, 2],
@@ -231,17 +216,14 @@ function drawHands(predictions) {
     [18, 19],
     [19, 20], // Pinky
   ];
-
-  // Iterate through each hand's predictions
   handCache.forEach((landmarks) => {
     drawConnections(landmarks, connections);
     drawLandmarks(landmarks);
   });
 }
 
-// Helper function to draw connections
 function drawConnections(landmarks, connections) {
-  stroke(0, 255, 0, 150); // Green color with transparency
+  stroke(0, 255, 0, 150);
   strokeWeight(2);
 
   connections.forEach(([start, end]) => {
@@ -250,9 +232,9 @@ function drawConnections(landmarks, connections) {
 
     if (startLandmark && endLandmark) {
       line(
-        (1 - startLandmark.x) * width, // Mirror the x-coordinate
+        (1 - startLandmark.x) * width,
         startLandmark.y * height,
-        (1 - endLandmark.x) * width, // Mirror the x-coordinate
+        (1 - endLandmark.x) * width,
         endLandmark.y * height
       );
     }
@@ -261,11 +243,11 @@ function drawConnections(landmarks, connections) {
 
 // Helper function to draw landmarks
 function drawLandmarks(landmarks) {
-  fill(0, 0, 255, 200); // Blue color with transparency
+  fill(0, 0, 255, 200);
   noStroke();
 
   landmarks.forEach(({ x, y }) => {
-    ellipse((1 - x) * width, y * height, 12, 12); // Mirror the x-coordinate
+    ellipse((1 - x) * width, y * height, 12, 12);
   });
 }
 
@@ -284,17 +266,15 @@ function game() {
     const predictions = detections.multiHandLandmarks;
     drawHands(predictions);
 
-    // Update sword position based on thumb of the first hand
-    // if (predictions.length > 0 && isIndexFingerUp(predictions[0])) {
     if (predictions.length > 0 && isIndexFingerUp(predictions[0])) {
       leftHand = isLeftHand(detections.multiHandedness[0]);
       const indexFinger = predictions[0][8];
-      sword.swipe((1 - indexFinger.x) * width, indexFinger.y * height); // Mirror the x-coordinate
+      sword.swipe((1 - indexFinger.x) * width, indexFinger.y * height);
     }
   }
   if (frameCount % 5 === 0) {
     if (noise(frameCount) > 0.69 && fruit.length < 4) {
-      fruit.push(randomFruit()); // Display new fruit
+      fruit.push(randomFruit());
     }
   }
 
@@ -304,25 +284,21 @@ function game() {
     fruit[i].draw();
     if (!fruit[i].visible) {
       if (!fruit[i].sliced && fruit[i].name != "boom") {
-        // Missed fruit
         image(this.livesImgs2[0], fruit[i].x, fruit[i].y - 120, 50, 50);
         missed.play();
         lives--;
         x++;
       }
       if (lives < 1) {
-        // Check for lives
         gameOver();
       }
       fruit.splice(i, 1);
     } else {
       if (fruit[i].sliced && fruit[i].name == "boom") {
-        // Check for bomb
         boom.play();
         gameOver();
       }
       if (sword.checkSlice(fruit[i], leftHand) && fruit[i].name != "boom") {
-        // Sliced fruit
         spliced.play();
         textSize(80);
         fill(255);
@@ -439,7 +415,6 @@ function drawScore() {
 }
 
 function gameOver() {
-  // noLoop();
   if (!isGameOver) {
     lives = 0;
     over.play();
@@ -455,14 +430,12 @@ function gameOver() {
     const predictions = detections.multiHandLandmarks;
     drawHands(predictions);
 
-    // Check if both hands are open
     if (predictions.length === 2 && isThumbsUp(predictions)) {
-      closedHandFrames++; // Increment counter if hands are open
+      closedHandFrames++;
     } else {
-      closedHandFrames = 0; // Reset counter if hands are not open
+      closedHandFrames = 0;
     }
 
-    // Trigger game if hands are open for required frames
     if (closedHandFrames >= requiredCloseFrames) {
       restartGame();
     }
@@ -484,6 +457,6 @@ function restartGame() {
   fruit = [];
   openHandFrames = 0;
   closedHandFrames = 0;
-  isGameOver = false; // Reset game over state
-  loop(); // Restart the game loop
+  isGameOver = false;
+  loop();
 }

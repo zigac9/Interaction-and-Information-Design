@@ -1,4 +1,3 @@
-// FRUIT
 function Fruit(
   x,
   y,
@@ -28,11 +27,9 @@ function Fruit(
 Fruit.prototype.draw = function () {
   fill(this.color);
   if (this.sliced && this.name != "boom") {
-    // Draw sliced fruit
     image(this.slicedFruit1, this.x - 25, this.y, this.size, this.size);
     image(this.slicedFruit2, this.x + 25, this.y, this.size, this.size);
   } else {
-    // Draw fruit
     image(this.fruit, this.x, this.y, this.size, this.size);
   }
 };
@@ -53,7 +50,6 @@ Fruit.prototype.update = function () {
 };
 
 function randomFruit() {
-  // Create randon fruit
   var x = random(width);
   var y = height;
   var size = noise(frameCount) * 20 + 60;

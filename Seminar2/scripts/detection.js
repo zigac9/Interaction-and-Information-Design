@@ -5,7 +5,6 @@ videoElement.style.display = "none"; // Hide the video element
 
 function gotHands(results) {
   detections = results;
-  // console.log(detections);
 }
 
 const hands = new Hands({
