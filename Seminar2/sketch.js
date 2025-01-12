@@ -23,7 +23,7 @@ let instructions = true;
 const requiredOpenFrames = 10;
 const requiredCloseFrames = 10;
 const opennessThreshold = 0.02;
-
+let both_hands = 0;
 let width_image = 1880;
 let height_image = 893;
 let aspectRatio = width_image / height_image;
@@ -264,9 +264,20 @@ function game() {
   let leftHand = null;
   if (detections && detections.multiHandLandmarks) {
     const predictions = detections.multiHandLandmarks;
+
     drawHands(predictions);
 
-    if (predictions.length > 0 && isIndexFingerUp(predictions[0])) {
+    if (predictions.length === 2) {
+      both_hands++;
+    } else {
+      both_hands = 0;
+    }
+
+    if (
+      (predictions.length == 1 ||
+        (predictions.length === 2 && both_hands >= 5)) &&
+      isIndexFingerUp(predictions[0])
+    ) {
       leftHand = isLeftHand(detections.multiHandedness[0]);
       const indexFinger = predictions[0][8];
       sword.swipe((1 - indexFinger.x) * width, indexFinger.y * height);
