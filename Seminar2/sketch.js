@@ -25,7 +25,7 @@ const requiredCloseFrames = 10;
 const opennessThreshold = 0.02;
 let both_hands = 0;
 let width_image = 1880;
-let height_image = 893;
+let height_image = 930;
 let aspectRatio = width_image / height_image;
 
 function preload() {
@@ -284,7 +284,7 @@ function game() {
     }
   }
   if (frameCount % 5 === 0) {
-    if (noise(frameCount) > 0.69 && fruit.length < 4) {
+    if (noise(frameCount) > 0.69 && fruit.length < 7) {
       fruit.push(randomFruit());
     }
   }
