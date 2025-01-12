@@ -284,7 +284,7 @@ function game() {
     }
   }
   if (frameCount % 5 === 0) {
-    if (noise(frameCount) > 0.69 && fruit.length < 7) {
+    if (noise(frameCount) > 0.69 && fruit.length < 6) {
       fruit.push(randomFruit());
     }
   }
