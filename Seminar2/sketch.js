@@ -27,6 +27,7 @@ let both_hands = 0;
 let width_image = 1880;
 let height_image = 930;
 let aspectRatio = width_image / height_image;
+let prev_hand_left = null;
 
 function preload() {
   // LOAD SOUNDS
@@ -279,6 +280,10 @@ function game() {
       isIndexFingerUp(predictions[0])
     ) {
       leftHand = isLeftHand(detections.multiHandedness[0]);
+      if (prev_hand_left == null || prev_hand_left != leftHand) {
+        sword.swipes = [];
+      }
+      prev_hand_left = leftHand;
       const indexFinger = predictions[0][8];
       sword.swipe((1 - indexFinger.x) * width, indexFinger.y * height);
     }
