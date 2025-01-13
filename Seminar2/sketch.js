@@ -481,5 +481,7 @@ function restartGame() {
   openHandFrames = 0;
   closedHandFrames = 0;
   isGameOver = false;
+  both_hands = 0;
+  prev_hand_left = null;
   loop();
 }
