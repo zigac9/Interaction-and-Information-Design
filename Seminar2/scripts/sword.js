@@ -27,7 +27,7 @@ Sword.prototype.draw = function () {
 };
 
 Sword.prototype.update = function () {
-  if (this.swipes.length > 10) {
+  if (this.swipes.length > 5) {
     this.swipes.splice(0, 1);
   }
   if (this.swipes.length > 0) {
