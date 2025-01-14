@@ -52,7 +52,7 @@ Fruit.prototype.update = function () {
 function randomFruit() {
   var x = random(width);
   var y = height;
-  var size = noise(frameCount) * 20 + 60;
+  var size = noise(frameCount) * 20 + 70;
   var col = color(random(255), random(255), random(255));
   var speed = random(3, 5);
   var idx = round(random(0, fruitsList.length - 1));
