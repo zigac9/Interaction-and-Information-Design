@@ -155,7 +155,7 @@ function areBothHandsOpen(predictions) {
 
 function isIndexFingerUp(hand) {
   const thumbIsClosed = Math.abs(hand[4].y - hand[3].y) < opennessThreshold;
-  // const indexIsOpen = Math.abs(hand[8].y - hand[7].y) > opennessThreshold;
+  const indexIsOpen = Math.abs(hand[8].y - hand[7].y) > opennessThreshold;
   const middleIsClosed = Math.abs(hand[12].y - hand[11].y) < opennessThreshold;
   const ringIsClosed = Math.abs(hand[16].y - hand[15].y) < opennessThreshold;
   const pinkyIsClosed = Math.abs(hand[20].y - hand[19].y) < opennessThreshold;
@@ -167,7 +167,7 @@ function isIndexFingerUp(hand) {
     pinkyIsClosed,
   ].filter((isClosed) => isClosed).length;
 
-  return fingersClosed >= 2;
+  return indexIsOpen && fingersClosed >= 0;
 }
 
 function isThumbsUp(predictions) {
@@ -276,7 +276,7 @@ function game() {
 
     if (
       (predictions.length == 1 ||
-        (predictions.length === 2 && both_hands >= 5)) &&
+        (predictions.length === 2 && both_hands >= 3)) &&
       isIndexFingerUp(predictions[0])
     ) {
       leftHand = isLeftHand(detections.multiHandedness[0]);
