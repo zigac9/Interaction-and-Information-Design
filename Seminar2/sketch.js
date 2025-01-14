@@ -338,8 +338,8 @@ function game() {
   sword.draw();
   score += points;
   if (instructions) {
-    image(this.leftHandFruits, 5, 80, 140, 260);
-    image(this.rightHandFruits, width - 150, 90, 150, 260);
+    image(this.leftHandFruits, 10, 80, 170, 290);
+    image(this.rightHandFruits, width - 185, 90, 180, 290);
   }
   drawScore();
   drawLives();
